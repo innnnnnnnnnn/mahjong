@@ -40,6 +40,22 @@ const GameBoard: React.FC<GameBoardProps> = ({ mode, roomId, username, onBack })
     const [tingHint, setTingHint] = useState<{ discards: any[] } | null>(null);
     const [isMuted, setIsMuted] = useState(audioService.isMuted());
     const [showAIHint, setShowAIHint] = useState(false);
+    const [showOrientationHint, setShowOrientationHint] = useState(false);
+    const [isPortrait, setIsPortrait] = useState(false);
+
+    useEffect(() => {
+        const checkOrientation = () => {
+            const portrait = window.innerHeight > window.innerWidth;
+            setIsPortrait(portrait);
+            // Only show a fresh hint if we just entered portrait from landscape
+            if (portrait && !showOrientationHint) {
+                setShowOrientationHint(true);
+            }
+        };
+        checkOrientation();
+        window.addEventListener('resize', checkOrientation);
+        return () => window.removeEventListener('resize', checkOrientation);
+    }, []);
 
     useEffect(() => {
         if (gameState?.status === 'HU') {
@@ -118,8 +134,10 @@ const GameBoard: React.FC<GameBoardProps> = ({ mode, roomId, username, onBack })
         const isHost = myPlayer?.isHost || roomData.hostId === socket.id;
 
         const handleCopyLink = () => {
-            navigator.clipboard.writeText(window.location.href);
-            alert("📋 複製邀請連結成功！請分享給好友。");
+            const url = new URL(window.location.href);
+            url.searchParams.set('room', roomId);
+            navigator.clipboard.writeText(url.toString());
+            alert(`📋 複製邀請連結成功！請分享給好友。\n(${roomId})`);
         };
 
         return (
@@ -177,7 +195,13 @@ const GameBoard: React.FC<GameBoardProps> = ({ mode, roomId, username, onBack })
 
 
     return (
-        <div className={`game-container ${shake ? 'shake' : ''}`}>
+        <div className={`game-container ${shake ? 'shake' : ''} ${isPortrait ? 'is-portrait' : ''}`}>
+            {showOrientationHint && isPortrait && (
+                <div className="orientation-hint">
+                    <span>ℹ️ 建議將手機轉為橫向以獲得最佳遊玩體驗</span>
+                    <button onClick={() => setShowOrientationHint(false)}>✕</button>
+                </div>
+            )}
             <div className="mahjong-table">
                 <button
                     className="btn-leave-room"

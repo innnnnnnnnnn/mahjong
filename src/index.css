@@ -1945,3 +1945,148 @@ input:checked+.slider:before {
     filter: brightness(1.5);
   }
 }
+
+/* Orientation Hint */
+.orientation-hint {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.9);
+  color: var(--accent-gold);
+  padding: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 9999;
+  font-weight: bold;
+  border-bottom: 2px solid var(--accent-gold);
+  backdrop-filter: blur(10px);
+}
+
+.orientation-hint button {
+  background: transparent;
+  border: 1px solid var(--accent-gold);
+  color: var(--accent-gold);
+  padding: 4px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+/* Mobile Optimizations */
+@media (max-width: 900px) {
+  .mahjong-table {
+    padding: 10px;
+  }
+
+  /* Scale down opponents */
+  .pi-top,
+  .pi-left,
+  .pi-right {
+    transform: scale(0.7) !important;
+  }
+
+  .pi-top {
+    top: -20px !important;
+  }
+
+  .pi-left {
+    left: -30px !important;
+  }
+
+  .pi-right {
+    right: -30px !important;
+  }
+
+  .player-top,
+  .player-left,
+  .player-right {
+    transform: scale(0.6) !important;
+  }
+
+  /* River area scaling */
+  .river-area {
+    transform: scale(0.7);
+    max-width: 60%;
+  }
+
+  /* Reaction Menu adjustment */
+  .reaction-menu {
+    bottom: 100px;
+    right: 10px;
+    transform: scale(0.9);
+    flex-wrap: wrap;
+  }
+
+  /* Mac Dock Effect for Player Hand & High Overlap */
+  .player-bottom .hand {
+    gap: 0;
+    padding-bottom: 20px;
+    justify-content: center;
+  }
+
+  /* Target tiles inside the hand */
+  .player-bottom .hand>div {
+    margin-left: -15px;
+    /* Significant overlap */
+    transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    transform-origin: bottom center;
+    z-index: 10;
+  }
+
+  /* Portrait specific - even more overlap */
+  .is-portrait .player-bottom .hand>div {
+    margin-left: -22px;
+  }
+
+  .player-bottom .hand>div:first-child {
+    margin-left: 0;
+  }
+
+  /* The Dock Magnification Wave */
+  .player-bottom .hand:hover>div {
+    opacity: 0.8;
+  }
+
+  /* Touched/Hovered tile */
+  .player-bottom .hand>div:hover {
+    margin-left: 0;
+    margin-right: 15px;
+    transform: translateY(-25px) scale(1.6);
+    z-index: 100 !important;
+    opacity: 1 !important;
+  }
+
+  /* Adjacent tiles effect using sibling selectors */
+  .player-bottom .hand>div:hover+div {
+    transform: translateY(-10px) scale(1.2);
+    margin-left: 10px;
+    z-index: 50;
+    opacity: 0.95 !important;
+  }
+
+  /* Previous tile effect using :has */
+  .player-bottom .hand>div:has(+ div:hover) {
+    transform: translateY(-10px) scale(1.2);
+    margin-right: 10px;
+    z-index: 50;
+    opacity: 0.95 !important;
+  }
+
+  /* Center Info Board scaling */
+  .center-info-board {
+    transform: translate(-50%, -50%) scale(0.8);
+  }
+}
+
+/* Landscape Mobile specific adjustments */
+@media (max-width: 900px) and (orientation: landscape) {
+  .player-bottom {
+    bottom: 2px;
+  }
+
+  .player-bottom .tile {
+    width: 38px;
+    height: 52px;
+  }
+}
