@@ -2034,9 +2034,41 @@ input:checked+.slider:before {
     z-index: 10;
   }
 
-  /* Portrait specific - even more overlap */
+  /* Portrait specific - Two Rows for Hand */
+  .is-portrait .player-bottom .hand {
+    flex-wrap: wrap;
+    max-width: 400px;
+    /* Force wrapping into roughly two rows */
+    gap: 8px 4px;
+    justify-content: center;
+    padding-bottom: 40px;
+  }
+
   .is-portrait .player-bottom .hand>div {
-    margin-left: -22px;
+    margin-left: 0 !important;
+    /* Remove heavy overlap in two-row mode */
+    transform: scale(0.85);
+    /* Slightly smaller tiles for better fit in portrait rows */
+    transition: transform 0.2s;
+  }
+
+  /* Simpler hover effect for portrait wrapping (prevents layout jumping) */
+  .is-portrait .player-bottom .hand:hover>div {
+    opacity: 1;
+  }
+
+  .is-portrait .player-bottom .hand>div:hover {
+    transform: scale(1.1) translateY(-10px);
+    margin-left: 0;
+    margin-right: 0;
+    z-index: 100 !important;
+  }
+
+  /* Disable complex dock wave in wrap mode as it breaks layout */
+  .is-portrait .player-bottom .hand>div:hover+div,
+  .is-portrait .player-bottom .hand>div:has(+ div:hover) {
+    transform: scale(0.85);
+    margin: 0;
   }
 
   .player-bottom .hand>div:first-child {
