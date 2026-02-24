@@ -185,7 +185,7 @@ const Tile: React.FC<TileProps> = ({ tile, onClick, selected, isFaceDown, isDimm
                     <div className="tile-back" style={{
                         width: '100%',
                         height: '100%',
-                        backgroundImage: "url('/tiles/tile_back.png')",
+                        backgroundImage: `url('${import.meta.env.BASE_URL}tiles/tile_back.png')`,
                         backgroundSize: 'cover',
                         backgroundPosition: 'center',
                         borderRadius: '5px'

@@ -25,7 +25,7 @@ class AudioService {
 
         // 1. Handle Fixed Sounds
         if (this.fixedSounds[scenario]) {
-            const audio = new Audio(`/audio/fx/${this.fixedSounds[scenario]}`);
+            const audio = new Audio(`${import.meta.env.BASE_URL}audio/fx/${this.fixedSounds[scenario]}`);
             audio.play().catch(() => {
                 // Fallback to synthesis if file missing
                 if (scenario === 'DRAW' || scenario === 'DISCARD') this.playTileClack();
@@ -54,9 +54,9 @@ class AudioService {
             }
 
             // 2. File-based Voices
-            const audio = new Audio(`/audio/voices/${folder}/${action}.mp3`);
+            const audio = new Audio(`${import.meta.env.BASE_URL}audio/voices/${folder}/${action}.mp3`);
             audio.play().catch(() => {
-                const wavAudio = new Audio(`/audio/voices/${folder}/${action}.wav`);
+                const wavAudio = new Audio(`${import.meta.env.BASE_URL}audio/voices/${folder}/${action}.wav`);
                 wavAudio.play().catch(() => {
                     this.playVoiceFallback(scenario);
                 });
@@ -109,7 +109,7 @@ class AudioService {
             this.bgmAudio = null;
         }
         if (name && !this.muted) {
-            this.bgmAudio = new Audio(`/audio/bgm/${name}`);
+            this.bgmAudio = new Audio(`${import.meta.env.BASE_URL}audio/bgm/${name}`);
             this.bgmAudio.loop = true;
             this.bgmAudio.volume = this.bgmVolume;
             this.playBGM();
