@@ -720,7 +720,15 @@ export const useMahjongGame = (isMultiplayer: boolean = false, roomId: string = 
         if (!isMultiplayer) return;
 
         socket.connect();
-        socket.emit('join_room', { roomId, playerName: playerName || localStorage.getItem('mahjong_user') || 'Guest' });
+
+        const join = () => {
+            socket.emit('join_room', { roomId, playerName: playerName || localStorage.getItem('mahjong_user') || 'Guest' });
+        };
+
+        if (socket.connected) {
+            join();
+        }
+        socket.on('connect', join);
 
         socket.on('room_update', (room) => {
             console.log("Room updated:", room);
