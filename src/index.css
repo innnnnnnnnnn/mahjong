@@ -10,6 +10,16 @@
   --accent-gold: #d4af37;
   --text-primary: #ffffff;
   --tile-bg: #f9f7f2;
+
+  /* Responsive Variables */
+  --tile-w: 44px;
+  --tile-h: 60px;
+  --tile-fs: 1.8rem;
+  --table-scale: 1;
+  --hand-gap: 1px;
+  --river-cols: 14;
+  --river-rows: 7;
+  --river-tile-scale: 0.8;
 }
 
 body {
@@ -43,8 +53,7 @@ body {
   box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.5), 0 20px 50px rgba(0, 0, 0, 0.8);
   position: relative;
   border: 15px solid #4e342e;
-  /* Removed rotateX to ensure mouse event mapping is 100% accurate */
-  transform: none;
+  transform: scale(var(--table-scale));
   transform-style: preserve-3d;
 }
 
@@ -98,7 +107,7 @@ body {
 
 .hand {
   display: flex;
-  gap: 1px;
+  gap: var(--hand-gap);
   padding: 10px;
   align-items: flex-end;
 }
@@ -188,13 +197,13 @@ body {
 }
 
 .tile {
-  width: 44px;
-  height: 60px;
+  width: var(--tile-w);
+  height: var(--tile-h);
   border-radius: 5px;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 1.8rem;
+  font-size: var(--tile-fs);
   font-weight: bold;
   cursor: pointer;
   user-select: none;
@@ -875,8 +884,8 @@ body {
   left: 50%;
   transform: translate(-50%, -50%);
   display: grid;
-  grid-template-columns: repeat(14, 37px);
-  grid-template-rows: repeat(7, 50px);
+  grid-template-columns: repeat(var(--river-cols), 37px);
+  grid-template-rows: repeat(var(--river-rows), 50px);
   grid-auto-flow: dense;
   gap: 1.5px;
   justify-content: center;
@@ -891,9 +900,9 @@ body {
 }
 
 .river-tile {
-  width: 44px;
-  height: 60px;
-  transform: scale(0.80);
+  width: var(--tile-w);
+  height: var(--tile-h);
+  transform: scale(var(--river-tile-scale));
   box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.4);
 }
 
@@ -1943,5 +1952,135 @@ input:checked+.slider:before {
   100% {
     transform: translate(-50%, -5px);
     filter: brightness(1.5);
+  }
+}
+/* ==========================================================================
+   Responsive Logic (Three-Tier Design)
+   ========================================================================== */
+
+/* TABLET: 768px - 1024px */
+@media (max-width: 1024px) {
+  :root {
+    --tile-w: 36px;
+    --tile-h: 50px;
+    --tile-fs: 1.5rem;
+    --table-scale: 0.9;
+    --river-cols: 10;
+    --river-tile-scale: 0.7;
+  }
+}
+
+/* MOBILE: < 768px */
+@media (max-width: 767px) {
+  :root {
+    --tile-w: 32px;
+    --tile-h: 44px;
+    --tile-fs: 1.2rem;
+    --table-scale: 0.8;
+    --river-cols: 8;
+    --river-tile-scale: 0.65;
+  }
+
+  .mahjong-table {
+    border-width: 8px;
+    border-radius: 12px;
+  }
+
+  /* PORTRAIT SPECIFIC */
+  @media (orientation: portrait) {
+    :root {
+      --table-scale: 0.7;
+      --tile-w: 30px;
+      --tile-h: 42px;
+      --tile-fs: 1.1rem;
+    }
+
+    .mahjong-table {
+        height: 55vh; /* Scale down the main board to fit top 70% roughly */
+        width: 100vw;
+        top: -15%; /* Lift it up */
+        left: 0;
+        margin: 0;
+        max-width: none;
+    }
+
+    /* U-Shape Opponents (ㄇ字型) */
+    .player-top { top: 0; }
+    .player-left { left: 0; transform: translate(0, -100%) rotate(0deg); } /* Flat top down instead of rotate */
+    .player-right { right: 0; transform: translate(0, -100%) rotate(0deg); }
+
+    .pi-left { left: 5px; top: 120px; transform: none; padding: 4px 8px; font-size: 0.8rem; }
+    .pi-right { right: 5px; top: 120px; transform: none; padding: 4px 8px; font-size: 0.8rem; }
+    .pi-top { top: 40px; padding: 4px 8px; font-size: 0.8rem; }
+
+    /* Bottom area split hand */
+    .player-bottom {
+        bottom: 0px;
+        position: fixed;
+        width: 100vw;
+        left: 0;
+        right: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        background: rgba(10, 40, 25, 0.9);
+        padding: 10px 0;
+        backdrop-filter: blur(10px);
+        border-top: 2px solid var(--accent-gold);
+        height: 180px; /* Fixed height for hand area */
+        z-index: 2000;
+        pointer-events: auto;
+    }
+
+    .player-bottom .hand {
+        display: flex;
+        flex-wrap: wrap;
+        width: 280px; /* Force 8 tiles per row approx (30px * 8 = 240 + gaps) */
+        justify-content: center;
+        gap: 4px;
+        padding-bottom: 5px;
+        margin-top: 5px;
+    }
+
+    .player-bottom .exposed-sets {
+        margin-right: 0;
+        margin-bottom: 5px;
+        transform: scale(0.8);
+    }
+
+    .pi-bottom {
+        bottom: 185px; /* Above the fixed hand area */
+        z-index: 2500;
+        left: 10px;
+        transform: none;
+    }
+
+    .main-controls {
+        top: 45%;
+    }
+
+    .reaction-menu {
+        bottom: 200px;
+        right: 50%;
+        transform: translateX(50%);
+        width: 95vw;
+        justify-content: center;
+        gap: 8px;
+        padding: 8px;
+    }
+
+    .reaction-menu .btn {
+      padding: 8px 15px;
+      font-size: 1rem;
+    }
+    
+    .center-info-board {
+        top: 45%;
+        transform: translate(-50%, -50%) scale(0.8);
+    }
+
+    .river-area {
+        transform: translate(-50%, -50%) scale(0.7);
+    }
   }
 }
