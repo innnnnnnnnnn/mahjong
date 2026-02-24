@@ -5,6 +5,7 @@ import LobbyScreen from './components/LobbyScreen';
 import SettingsModal from './components/SettingsModal';
 import { connectSocket } from './services/socket';
 import { audioService } from './logic/audioService';
+import liff from '@line/liff';
 import './index.css';
 
 function App() {
@@ -46,9 +47,14 @@ function App() {
   };
 
   const handleLogout = () => {
+    if (liff.isLoggedIn()) {
+      liff.logout();
+    }
     setUsername(null);
     localStorage.removeItem('mahjong_user');
     setMode('AUTH');
+    // Refresh to clear any internal state if needed
+    window.location.reload();
   };
 
   const handleCreateRoom = () => {
