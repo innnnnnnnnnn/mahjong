@@ -25,6 +25,9 @@ jobs:
         run: npm install
       - name: Build
         run: npm run build
+        env:
+          VITE_SOCKET_URL: https://mahjong-zayy.onrender.com
+          VITE_LIFF_ID: 2009183123-VjyOYar4
       - name: Setup Pages
         uses: actions/configure-pages@v4
       - name: Upload artifact
