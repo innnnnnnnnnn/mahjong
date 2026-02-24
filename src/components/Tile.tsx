@@ -121,7 +121,7 @@ const renderTiao = (value: number) => {
                     backgroundColor: s.color,
                     borderRadius: '3px',
                     transform: `translate(-50%, -50%) rotate(${s.rot || 0}deg)`,
-                    boxShadow: 'inset 1px 1px 2px rgba(255,255,255,0.4), inset -1px -1px 2px rgba(0,0,0,0.3)',
+                    boxShadow: 'inset 1px 1px 2px rgba(255,255,255,0.4), inset -1px -1px 2px rgba(0,0,0,0.1)',
                     border: '1px solid rgba(0,0,0,0.1)'
                 }} />
             ))}
@@ -153,7 +153,7 @@ const renderGeneric = (display: string, color: string) => {
 
 
 const Tile: React.FC<TileProps> = ({ tile, onClick, selected, isFaceDown, isDimmed, className }) => {
-    const display = TILE_MAPPING[tile.display] || tile.value.toString();
+    const display = TILE_MAPPING[tile.display] || String(tile.value);
     const color = TILE_COLORS[tile.display] || TILE_COLORS[tile.type as string] || '#333';
 
     const handleClick = () => {
@@ -175,8 +175,8 @@ const Tile: React.FC<TileProps> = ({ tile, onClick, selected, isFaceDown, isDimm
             >
                 {!isFaceDown && (
                     <div className="tile-face" style={{ color }}>
-                        {tile.type === 'TONG' && renderTong(tile.value)}
-                        {tile.type === 'TIAO' && renderTiao(tile.value)}
+                        {tile.type === 'TONG' && renderTong(tile.value as number)}
+                        {tile.type === 'TIAO' && renderTiao(tile.value as number)}
                         {tile.type === 'WAN' && renderWan(display)}
                         {tile.type !== 'TONG' && tile.type !== 'TIAO' && tile.type !== 'WAN' && renderGeneric(display, color)}
                     </div>

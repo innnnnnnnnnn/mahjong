@@ -36,7 +36,6 @@ export const useMahjongGame = (isMultiplayer: boolean = false, roomId: string = 
     const [isConnecting, setIsConnecting] = useState(isMultiplayer);
     const [roomData, setRoomData] = useState<any>(null);
     const [myPlayerIndex, setMyPlayerIndex] = useState<number>(0);
-    const [connectionError, setConnectionError] = useState<string | null>(null);
     const stateRef = useRef<GameState | null>(null);
 
     // Sync ref with state for use in callbacks without stale closures
@@ -721,37 +720,16 @@ export const useMahjongGame = (isMultiplayer: boolean = false, roomId: string = 
         if (!isMultiplayer) return;
 
         socket.connect();
-        setConnectionError(null);
+        socket.emit('join_room', { roomId, playerName: playerName || localStorage.getItem('mahjong_user') || 'Guest' });
 
-        const join = () => {
-            socket.emit('join_room', { roomId, playerName: playerName || localStorage.getItem('mahjong_user') || 'Guest' });
-        };
-
-        const onConnect = () => {
-            setConnectionError(null);
-            join();
-        };
-
-        const onConnectError = (err: Error) => {
-            console.error("[Socket] Connection Error:", err.message);
-            setConnectionError(`連線伺服器失敗。伺服器可能正在喚醒中 (免費主機冷啟動需約 50 秒)，請稍後並重整網頁。`);
-        };
-
-        const onRoomUpdate = (room: any) => {
+        socket.on('room_update', (room) => {
+            console.log("Room updated:", room);
             setRoomData(room);
             setIsConnecting(false);
-            setConnectionError(null);
+
             const myIdx = room.players.findIndex((p: any) => p.socketId === socket.id);
             if (myIdx !== -1) setMyPlayerIndex(myIdx);
-        };
-
-        if (socket.connected) {
-            join();
-        }
-
-        socket.on('connect', onConnect);
-        socket.on('connect_error', onConnectError);
-        socket.on('room_update', onRoomUpdate);
+        });
 
         socket.on('sync_state', ({ action: _action, data }) => {
             setGameState(data);
@@ -774,10 +752,8 @@ export const useMahjongGame = (isMultiplayer: boolean = false, roomId: string = 
         });
 
         return () => {
-            socket.off('connect', onConnect);
-            socket.off('connect_error', onConnectError);
-            socket.off('room_update', onRoomUpdate);
             socket.off('sync_state');
+            socket.off('room_update');
             socket.off('game_started');
             socket.disconnect();
         };
@@ -947,8 +923,7 @@ export const useMahjongGame = (isMultiplayer: boolean = false, roomId: string = 
         isConnecting,
         roomData,
         myPlayerIndex,
-        addAI,
-        connectionError
+        addAI
     };
 };
 

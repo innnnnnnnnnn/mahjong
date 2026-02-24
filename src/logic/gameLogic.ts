@@ -161,6 +161,29 @@ export const getTingDiscards = (hand: Tile[]): Tile[] => {
     return tingCandidates.map(c => c.tile);
 };
 
+export const getTingInfo = (hand: Tile[]): { tileId: string, waitingTiles: Tile[] }[] => {
+    if (hand.length % 3 !== 2) return [];
+
+    const results: { tileId: string, waitingTiles: Tile[] }[] = [];
+    const seen = new Set();
+
+    for (const discardCandidate of hand) {
+        const key = `${discardCandidate.type}-${discardCandidate.value}`;
+        if (seen.has(key)) continue;
+        seen.add(key);
+
+        const remaining16 = [...hand];
+        const idx = remaining16.findIndex(t => t.id === discardCandidate.id);
+        remaining16.splice(idx, 1);
+
+        const waiters = getWaitingTiles(remaining16);
+        if (waiters.length > 0) {
+            results.push({ tileId: discardCandidate.id, waitingTiles: waiters });
+        }
+    }
+    return results;
+};
+
 export const getWaitingTiles = (hand16: Tile[]): Tile[] => {
     const ALL_TILE_TYPES: Tile[] = [
         ...Array.from({ length: 9 }, (_, i) => ({ type: 'WAN', value: i + 1, id: `test-wan-${i + 1}`, display: `WAN_${i + 1}` } as Tile)),

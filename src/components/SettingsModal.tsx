@@ -1,7 +1,6 @@
 import React from 'react';
 import { audioService } from '../logic/audioService';
 import { motion } from 'framer-motion';
-import { socket } from '../services/socket';
 
 const CHARACTERS = [
     { id: 'oneesan', name: '👩‍💼 大姐姐' },

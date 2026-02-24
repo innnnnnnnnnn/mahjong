@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useMahjongGame } from '../hooks/useMahjongGame';
 import Tile from './Tile';
-import { canPung, isHu, calculateTai, canChow, canMingKong, canAnKong, canJiaKong, canTing, getWaitingTiles } from '../logic/gameLogic';
+import { canPung, isHu, calculateTai, canChow, canMingKong, canAnKong, canJiaKong, canTing, getWaitingTiles, getTingInfo } from '../logic/gameLogic';
 import { motion, AnimatePresence } from 'framer-motion';
 import { socket } from '../services/socket';
 import { audioService } from '../logic/audioService';
@@ -30,8 +30,7 @@ const GameBoard: React.FC<GameBoardProps> = ({ mode, roomId, username, onBack })
         isConnecting,
         roomData,
         myPlayerIndex,
-        addAI,
-        connectionError
+        addAI
     } = useMahjongGame(isMultiplayer, roomId, username);
 
     const [showDice, setShowDice] = useState(false);
@@ -41,22 +40,6 @@ const GameBoard: React.FC<GameBoardProps> = ({ mode, roomId, username, onBack })
     const [tingHint, setTingHint] = useState<{ discards: any[] } | null>(null);
     const [isMuted, setIsMuted] = useState(audioService.isMuted());
     const [showAIHint, setShowAIHint] = useState(false);
-    const [showOrientationHint, setShowOrientationHint] = useState(false);
-    const [isPortrait, setIsPortrait] = useState(false);
-
-    useEffect(() => {
-        const checkOrientation = () => {
-            const portrait = window.innerHeight > window.innerWidth;
-            setIsPortrait(portrait);
-            // Only show a fresh hint if we just entered portrait from landscape
-            if (portrait && !showOrientationHint) {
-                setShowOrientationHint(true);
-            }
-        };
-        checkOrientation();
-        window.addEventListener('resize', checkOrientation);
-        return () => window.removeEventListener('resize', checkOrientation);
-    }, []);
 
     useEffect(() => {
         if (gameState?.status === 'HU') {
@@ -100,8 +83,8 @@ const GameBoard: React.FC<GameBoardProps> = ({ mode, roomId, username, onBack })
             setSelectedTileId(tileId);
             // Ting Hint Logic (Single Player Only)
             if (!isMultiplayer) {
-                const discards = getTingDiscards(player.hand);
-                const hint = discards.find(d => d.tileId === tileId);
+                const info = getTingInfo(player.hand);
+                const hint = info.find(d => d.tileId === tileId);
                 if (hint) {
                     setTingHint({ discards: hint.waitingTiles });
                 } else {
@@ -127,18 +110,7 @@ const GameBoard: React.FC<GameBoardProps> = ({ mode, roomId, username, onBack })
         return tile.value;
     };
 
-    if (isConnecting) {
-        return (
-            <div className="loading" style={{ flexDirection: 'column', gap: '20px', padding: '40px', textAlign: 'center' }}>
-                <div>Connecting to Server...</div>
-                {connectionError && (
-                    <div style={{ color: '#ff6b6b', fontSize: '0.9rem', maxWidth: '300px', background: 'rgba(0,0,0,0.3)', padding: '15px', borderRadius: '10px' }}>
-                        {connectionError}
-                    </div>
-                )}
-            </div>
-        );
-    }
+    if (isConnecting) return <div className="loading">Connecting to Server...</div>;
 
     // Lobby / Waiting Room UI
     if (!gameState && roomData) {
@@ -146,10 +118,8 @@ const GameBoard: React.FC<GameBoardProps> = ({ mode, roomId, username, onBack })
         const isHost = myPlayer?.isHost || roomData.hostId === socket.id;
 
         const handleCopyLink = () => {
-            const url = new URL(window.location.href);
-            url.searchParams.set('room', roomId);
-            navigator.clipboard.writeText(url.toString());
-            alert(`📋 複製邀請連結成功！請分享給好友。\n(${roomId})`);
+            navigator.clipboard.writeText(window.location.href);
+            alert("📋 複製邀請連結成功！請分享給好友。");
         };
 
         return (
@@ -179,8 +149,8 @@ const GameBoard: React.FC<GameBoardProps> = ({ mode, roomId, username, onBack })
 
     const isMyTurn = gameState.activePlayerIndex === myPlayerIndex;
 
-    const canUserPung = gameState.status === 'ACTION_WINDOW' && !isMyTurn && gameState.lastDiscard && canPung(player.hand, gameState.lastDiscard);
-    const canUserHu = gameState.status === 'ACTION_WINDOW' && !isMyTurn && gameState.lastDiscard && isHu([...player.hand, gameState.lastDiscard]);
+    const canUserPung = Boolean(gameState.status === 'ACTION_WINDOW' && !isMyTurn && gameState.lastDiscard && canPung(player.hand, gameState.lastDiscard));
+    const canUserHu = Boolean(gameState.status === 'ACTION_WINDOW' && !isMyTurn && gameState.lastDiscard && isHu([...player.hand, gameState.lastDiscard]));
 
     // Chow from previous player
     const prevPlayerIdx = (myPlayerIndex + 3) % 4;
@@ -188,32 +158,23 @@ const GameBoard: React.FC<GameBoardProps> = ({ mode, roomId, username, onBack })
     const chowCombos = gameState.status === 'ACTION_WINDOW' && isPrevPlayerTurn && gameState.lastDiscard ? canChow(player.hand, gameState.lastDiscard) : [];
     const canUserChow = chowCombos.length > 0;
 
-    const canUserMingKong = gameState.status === 'ACTION_WINDOW' && !isMyTurn && gameState.lastDiscard && canMingKong(player.hand, gameState.lastDiscard);
+    const canUserMingKong = Boolean(gameState.status === 'ACTION_WINDOW' && !isMyTurn && gameState.lastDiscard && canMingKong(player.hand, gameState.lastDiscard));
 
     const anKongCombos = gameState.status === 'PLAYING' && isMyTurn && player.hand.length % 3 === 2 ? canAnKong(player.hand) : [];
     const jiaKongCombos = gameState.status === 'PLAYING' && isMyTurn && player.hand.length % 3 === 2 ? canJiaKong(player.hand, player.exposedSets) : [];
 
     const canUserAnKong = anKongCombos.length > 0;
     const canUserJiaKong = jiaKongCombos.length > 0;
-    const canUserPlayHu = gameState.status === 'PLAYING' && isMyTurn && player.hand.length % 3 === 2 && isHu(player.hand);
-    const canUserTing = gameState.status === 'PLAYING' && isMyTurn && player.hand.length % 3 === 2 && !player.isTing && canTing(player.hand);
+    const canUserPlayHu = Boolean(gameState.status === 'PLAYING' && isMyTurn && player.hand.length % 3 === 2 && isHu(player.hand));
+    const canUserTing = Boolean(gameState.status === 'PLAYING' && isMyTurn && player.hand.length % 3 === 2 && !player.isTing && canTing(player.hand));
 
-    const allOthersAreAI = isMultiplayer && gameState.players.filter((p, i) => i !== myPlayerIndex).every(p => p.isAI);
+    const allOthersAreAI = isMultiplayer && gameState.players.filter((_, i) => i !== myPlayerIndex).every(p => p.isAI);
     const bestDiscardTileId = (allOthersAreAI && showAIHint && isMyTurn && player.hand.length % 3 === 2 && !player.isTing)
         ? decideDiscard(player.hand, AIDifficulty.HARD).id
         : null;
 
-    //Seat positions logic: Bottom=0, Right=1, Top=2, Left=3 relative to myPlayerIndex
-
-
     return (
-        <div className={`game-container ${shake ? 'shake' : ''} ${isPortrait ? 'is-portrait' : ''}`}>
-            {showOrientationHint && isPortrait && (
-                <div className="orientation-hint">
-                    <span>ℹ️ 建議將手機轉為橫向以獲得最佳遊玩體驗</span>
-                    <button onClick={() => setShowOrientationHint(false)}>✕</button>
-                </div>
-            )}
+        <div className={`game-container ${shake ? 'shake' : ''}`}>
             <div className="mahjong-table">
                 <button
                     className="btn-leave-room"
@@ -250,7 +211,9 @@ const GameBoard: React.FC<GameBoardProps> = ({ mode, roomId, username, onBack })
                         <span style={{ color: 'var(--accent-gold)', fontWeight: 'bold' }}>聽牌提示：</span>
                         <div style={{ display: 'flex', gap: '5px' }}>
                             {tingHint.discards.map((t, i) => (
-                                <Tile key={`hint-${i}`} tile={t} style={{ transform: 'scale(0.6)', margin: '-10px' }} />
+                                <div key={`hint-${i}`} style={{ transform: 'scale(0.6)', margin: '-10px' }}>
+                                    <Tile tile={t} />
+                                </div>
                             ))}
                         </div>
                     </div>
@@ -267,7 +230,6 @@ const GameBoard: React.FC<GameBoardProps> = ({ mode, roomId, username, onBack })
 
                 {gameState.players.map((p, idx) => {
                     const playerWind = getPlayerWind(idx, gameState.dealerIndex);
-                    // Determine which CSS class to use (local player at bottom)
                     let seatPosIdx = (idx - myPlayerIndex + 4) % 4;
                     const posClasses = ['bottom', 'right', 'top', 'left'];
                     const posClass = posClasses[seatPosIdx];
@@ -288,7 +250,6 @@ const GameBoard: React.FC<GameBoardProps> = ({ mode, roomId, username, onBack })
                             <div className="flower-count">🌸 {p.flowerCards.length}</div>
                             <div className="score-count">💰 {p.score}</div>
 
-                            {/* AI Hint Switch on My Info Panel only */}
                             {allOthersAreAI && posClass === 'bottom' && (
                                 <div className="ai-hint-switch-container">
                                     <span className="ai-hint-label">💡提示</span>
@@ -336,7 +297,7 @@ const GameBoard: React.FC<GameBoardProps> = ({ mode, roomId, username, onBack })
                 </div>
 
                 {['right', 'top', 'left'].map((pos, i) => {
-                    const relativeIdx = i + 1; // 1, 2, 3
+                    const relativeIdx = i + 1;
                     const actualIdx = (myPlayerIndex + relativeIdx) % 4;
                     const otherPlayer = gameState.players[actualIdx];
 
@@ -403,7 +364,6 @@ const GameBoard: React.FC<GameBoardProps> = ({ mode, roomId, username, onBack })
                 )}
 
                 <div className="main-controls">
-                    {/* 正常出牌控制 */}
                     {gameState.status === 'PLAYING' && isMyTurn && !player.isTing && (
                         <>
                             {player.hand.length === 16 && (
@@ -428,13 +388,11 @@ const GameBoard: React.FC<GameBoardProps> = ({ mode, roomId, username, onBack })
                         </>
                     )}
 
-                    {/* 聽牌模式下的控制：持久顯示取消按鈕 */}
                     {player.isTing && gameState.status !== 'SETTLEMENT' && gameState.status !== 'WAITING' && (
                         <div style={{ display: 'flex', gap: '15px', alignItems: 'center' }}>
                             <button className="btn btn-action" style={{ background: '#555', border: '1px solid #777' }} onClick={() => processAction(myPlayerIndex, 'CANCEL_TING')}>
                                 🚫 取消聽牌
                             </button>
-                            {/* 聽牌時如果輪到自己且可以自摸，雖然會自動胡，但也保留手動按鈕以防萬一 */}
                             {isMyTurn && player.hand.length === 17 && canUserPlayHu && (
                                 <button className="btn btn-hu" onClick={() => processAction(myPlayerIndex, 'HU')}>胡牌</button>
                             )}
@@ -475,7 +433,7 @@ const GameBoard: React.FC<GameBoardProps> = ({ mode, roomId, username, onBack })
                             <div className="chow-combo-list">
                                 {chowCombos.map((combo, idx) => {
                                     const fullCombo = [...combo, gameState.lastDiscard!].sort((a, b) => Number(a.value) - Number(b.value));
-                                    const isRecChowCombo = idx === 0; // default suggest first combo
+                                    const isRecChowCombo = idx === 0;
                                     return (
                                         <div key={`chow-${idx}`} className="chow-combo-btn" style={{ position: 'relative' }} onClick={() => {
                                             setShowChowPicker(false);
@@ -557,8 +515,6 @@ const GameBoard: React.FC<GameBoardProps> = ({ mode, roomId, username, onBack })
                                                             const winnerIdx = gameState.winnerIndex;
                                                             if (winnerIdx === null) return '';
                                                             const winner = gameState.players[winnerIdx];
-                                                            // 自摸時手牌已有 3n+2 張，需取前 3n+1 張來計算聽牌
-                                                            // 榮胡時手牌只有 3n+1 張，直接計算即可
                                                             const handBeforeWin = gameState.winType === 'ZIMO'
                                                                 ? winner.hand.slice(0, winner.hand.length - 1)
                                                                 : winner.hand;

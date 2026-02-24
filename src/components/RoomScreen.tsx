@@ -75,7 +75,19 @@ const RoomScreen: React.FC<RoomScreenProps> = ({
                                     </div>
                                 </div>
                                 <div className="slot-action">
-                                    {p ? <div className="status-text ready">已加入</div> : <div className="status-text waiting">等待中</div>}
+                                    {p ? (
+                                        <div className="status-text ready">已加入</div>
+                                    ) : (
+                                        isHost && (
+                                            <button
+                                                className="btn-add-ai"
+                                                onClick={onAddAI}
+                                                style={{ padding: '4px 8px', fontSize: '0.7rem', borderRadius: '4px', background: 'var(--accent-gold)', color: 'black', border: 'none', cursor: 'pointer' }}
+                                            >
+                                                + 🤖 AI
+                                            </button>
+                                        )
+                                    )}
                                 </div>
                             </div>
                         );

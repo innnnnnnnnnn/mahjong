@@ -6,7 +6,6 @@ import SettingsModal from './components/SettingsModal';
 import { connectSocket } from './services/socket';
 import { audioService } from './logic/audioService';
 import './index.css';
-import liff from '@line/liff';
 
 function App() {
   const [mode, setMode] = useState<'AUTH' | 'LOBBY' | 'SINGLE' | 'MULTI'>('AUTH');
@@ -14,27 +13,13 @@ function App() {
   const [username, setUsername] = useState<string | null>(null);
   const [showSettings, setShowSettings] = useState(false);
 
-  const checkUrlForRoom = () => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const roomFromUrl = urlParams.get('room');
-    if (roomFromUrl) {
-      setRoomId(roomFromUrl);
-      setMode('MULTI');
-      window.history.replaceState({}, document.title, window.location.pathname);
-      return true;
-    }
-    return false;
-  };
-
   useEffect(() => {
     // Basic session persistence for guest login
     const savedUser = localStorage.getItem('mahjong_user');
     if (savedUser) {
       setUsername(savedUser);
+      setMode('LOBBY');
       connectSocket();
-      if (!checkUrlForRoom()) {
-        setMode('LOBBY');
-      }
     }
   }, []);
 
@@ -56,20 +41,11 @@ function App() {
   const handleLogin = (name: string) => {
     setUsername(name);
     localStorage.setItem('mahjong_user', name);
+    setMode('LOBBY');
     connectSocket();
-    if (!checkUrlForRoom()) {
-      setMode('LOBBY');
-    }
   };
 
   const handleLogout = () => {
-    try {
-      if (liff && liff.isLoggedIn()) {
-        liff.logout();
-      }
-    } catch (e) {
-      console.error('LIFF Logout Error:', e);
-    }
     setUsername(null);
     localStorage.removeItem('mahjong_user');
     setMode('AUTH');
