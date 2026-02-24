@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import liff from '@line/liff';
 
 interface LoginScreenProps {
     onLogin: (username: string) => void;
@@ -6,6 +7,23 @@ interface LoginScreenProps {
 
 const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
     const [guestName, setGuestName] = useState("");
+    const [isLiffInit, setIsLiffInit] = useState(false);
+
+    useEffect(() => {
+        const liffId = import.meta.env.VITE_LIFF_ID || "2009183123-VjyOYar4";
+        liff.init({ liffId })
+            .then(() => {
+                setIsLiffInit(true);
+                if (liff.isLoggedIn()) {
+                    liff.getProfile().then(profile => {
+                        onLogin(profile.displayName);
+                    });
+                }
+            })
+            .catch((err) => {
+                console.error("LIFF initialization failed", err);
+            });
+    }, [onLogin]);
 
     const handleGuestLogin = (e: React.FormEvent) => {
         e.preventDefault();
@@ -15,7 +33,17 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
     };
 
     const handleLineLogin = () => {
-        alert('LINE 登入尚未設定 NEXT_PUBLIC_LIFF_ID，目前僅展示用。請使用訪客登入 (快速試玩)。');
+        if (!isLiffInit) {
+            alert('LIFF 尚未初始化成功');
+            return;
+        }
+        if (!liff.isLoggedIn()) {
+            liff.login();
+        } else {
+            liff.getProfile().then(profile => {
+                onLogin(profile.displayName);
+            });
+        }
     };
 
     return (
@@ -51,6 +79,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
                     <button
                         onClick={handleLineLogin}
                         className="btn-line"
+                        disabled={!isLiffInit}
                     >
                         <span className="line-icon">💬</span>
                         <span>使用 LINE 帳號登入</span>
