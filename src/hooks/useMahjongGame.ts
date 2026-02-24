@@ -799,24 +799,37 @@ export const useMahjongGame = (isMultiplayer: boolean = false, roomId: string = 
 
             if (huProcessed) return;
 
-            // 2. See if the User has actions to perform (and isn't Ting)
-            const user = players[0];
-            const canUserHu = discarderIdx !== 0 && isHu([...user.hand, lastTile]);
-            const canUserPung = discarderIdx !== 0 && canPung(user.hand, lastTile);
-            const canUserChow = discarderIdx === 3 && canChow(user.hand, lastTile).length > 0;
-            const canUserMingKong = discarderIdx !== 0 && canMingKong(user.hand, lastTile);
-            const canUserAct = canUserHu || canUserPung || canUserChow || canUserMingKong;
+            // 2. Check if ANY human player (who is NOT in Ting mode) can perform an action.
+            // If so, we MUST stop here and wait for their socket signals.
+            let humanCanAct = false;
+            for (let i = 0; i < 4; i++) {
+                const p = players[i];
+                if (p.isAI) continue;
+                if (p.isTing) continue; // Ting players are automatic
 
-            // If user can act and is NOT Ting, wait for user input. Do not process AI actions yet.
-            if (!user.isAI && !user.isTing && canUserAct && discarderIdx !== 0) {
+                const canHu = i !== discarderIdx && isHu([...p.hand, lastTile]);
+                const canPAction = i !== discarderIdx && canPung(p.hand, lastTile);
+                // Chow only for the player immediately after the discarder
+                const canCAction = (i === (discarderIdx + 1) % 4) && canChow(p.hand, lastTile).length > 0;
+                const canKAction = i !== discarderIdx && canMingKong(p.hand, lastTile);
+
+                if (canHu || canPAction || canCAction || canKAction) {
+                    humanCanAct = true;
+                    break;
+                }
+            }
+
+            if (humanCanAct) {
+                // Important: If a human can act, host browser must NOT auto-pass.
                 return;
             }
 
-            // 3. User can't act or passed. Evaluate AI logic (Pung > Chow)
+            // 3. User can't act or requested to be automatic. Evaluate AI logic (Pung > Chow)
             for (let i = 1; i <= 3; i++) {
                 const pIdx = (discarderIdx + i) % 4;
-                if (pIdx === 0) continue;
                 const ai = players[pIdx];
+                if (!ai.isAI) continue; // Only process AI players here
+
                 if (shouldAction(ai.hand, lastTile, 'PUNG')) {
                     console.log(`AI ${ai.name} performs PUNG!`);
                     processAction(pIdx, 'PUNG');
@@ -826,16 +839,17 @@ export const useMahjongGame = (isMultiplayer: boolean = false, roomId: string = 
 
             // Chow check for next AI player
             const nextIdx = (discarderIdx + 1) % 4;
-            if (nextIdx !== 0 && players[nextIdx].isAI) {
-                if (shouldAction(players[nextIdx].hand, lastTile, 'CHOW')) {
-                    console.log(`AI ${players[nextIdx].name} performs CHOW!`);
+            const nextP = players[nextIdx];
+            if (nextP.isAI) {
+                if (shouldAction(nextP.hand, lastTile, 'CHOW')) {
+                    console.log(`AI ${nextP.name} performs CHOW!`);
                     processAction(nextIdx, 'CHOW');
                     return;
                 }
             }
 
-            // 4. No one did anything. Pass automatically.
-            processAction(0, 'PASS');
+            // 4. No one (Human or AI) wants to act. Pass automatically.
+            processAction(discarderIdx, 'PASS');
 
         }, 1200);
 
