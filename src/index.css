@@ -11,12 +11,11 @@
   --text-primary: #ffffff;
   --tile-bg: #f9f7f2;
 
-  /* Responsive Variables */
+  /* Default Variables */
   --tile-w: 44px;
   --tile-h: 60px;
   --tile-fs: 1.8rem;
   --table-scale: 1;
-  --hand-gap: 1px;
   --river-cols: 14;
   --river-rows: 7;
   --river-tile-scale: 0.8;
@@ -53,7 +52,8 @@ body {
   box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.5), 0 20px 50px rgba(0, 0, 0, 0.8);
   position: relative;
   border: 15px solid #4e342e;
-  transform: scale(var(--table-scale));
+  /* Removed rotateX to ensure mouse event mapping is 100% accurate */
+  transform: none;
   transform-style: preserve-3d;
 }
 
@@ -107,7 +107,7 @@ body {
 
 .hand {
   display: flex;
-  gap: var(--hand-gap);
+  gap: 1px;
   padding: 10px;
   align-items: flex-end;
 }
@@ -895,13 +895,13 @@ body {
 }
 
 .river-center-blocker {
-  grid-column: 1 / span 14;
+  grid-column: 1 / span var(--river-cols);
   grid-row: 4 / span 1;
 }
 
 .river-tile {
-  width: var(--tile-w);
-  height: var(--tile-h);
+  width: var(--river-tile-w, var(--tile-w));
+  height: var(--river-tile-h, var(--tile-h));
   transform: scale(var(--river-tile-scale));
   box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.4);
 }
@@ -1954,6 +1954,7 @@ input:checked+.slider:before {
     filter: brightness(1.5);
   }
 }
+
 /* ==========================================================================
    Responsive Logic (Three-Tier Design)
    ========================================================================== */
@@ -1986,101 +1987,127 @@ input:checked+.slider:before {
     border-radius: 12px;
   }
 
-  /* PORTRAIT SPECIFIC */
+  /* PORTRAIT SPECIFIC: 第一步 - 牌桌佔滿螢幕 */
   @media (orientation: portrait) {
-    :root {
-      --table-scale: 0.7;
-      --tile-w: 30px;
-      --tile-h: 42px;
-      --tile-fs: 1.1rem;
-    }
-
     .mahjong-table {
-        height: 55vh; /* Scale down the main board to fit top 70% roughly */
-        width: 100vw;
-        top: -15%; /* Lift it up */
-        left: 0;
-        margin: 0;
-        max-width: none;
+      height: 100vh;
+      width: 100vw;
+      top: 0;
+      left: 0;
+      margin: 0;
+      max-width: none;
+      border-radius: 0;
     }
 
-    /* U-Shape Opponents (ㄇ字型) */
-    .player-top { top: 0; }
-    .player-left { left: 0; transform: translate(0, -100%) rotate(0deg); } /* Flat top down instead of rotate */
-    .player-right { right: 0; transform: translate(0, -100%) rotate(0deg); }
-
-    .pi-left { left: 5px; top: 120px; transform: none; padding: 4px 8px; font-size: 0.8rem; }
-    .pi-right { right: 5px; top: 120px; transform: none; padding: 4px 8px; font-size: 0.8rem; }
-    .pi-top { top: 40px; padding: 4px 8px; font-size: 0.8rem; }
-
-    /* Bottom area split hand */
-    .player-bottom {
-        bottom: 0px;
-        position: fixed;
-        width: 100vw;
-        left: 0;
-        right: 0;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        background: rgba(10, 40, 25, 0.9);
-        padding: 10px 0;
-        backdrop-filter: blur(10px);
-        border-top: 2px solid var(--accent-gold);
-        height: 180px; /* Fixed height for hand area */
-        z-index: 2000;
-        pointer-events: auto;
+    /* 第三步：維持旋轉，並將資訊欄往桌邊平移 (130px) */
+    .pi-left {
+      left: 130px;
+      top: 50%;
+      transform: translate(-50%, -50%) rotate(90deg);
     }
 
-    .player-bottom .hand {
-        display: flex;
-        flex-wrap: wrap;
-        width: 280px; /* Force 8 tiles per row approx (30px * 8 = 240 + gaps) */
-        justify-content: center;
-        gap: 4px;
-        padding-bottom: 5px;
-        margin-top: 5px;
+    .pi-right {
+      right: 130px;
+      top: 50%;
+      transform: translate(50%, -50%) rotate(-90deg);
     }
 
-    .player-bottom .exposed-sets {
-        margin-right: 0;
-        margin-bottom: 5px;
-        transform: scale(0.8);
-    }
-
+    /* 第四步：調近我與對家的資訊欄 (110px) */
     .pi-bottom {
-        bottom: 185px; /* Above the fixed hand area */
-        z-index: 2500;
-        left: 10px;
-        transform: none;
+      bottom: 110px;
+      left: 50%;
+      transform: translateX(-50%);
     }
 
-    .main-controls {
-        top: 45%;
+    .pi-top {
+      top: 110px;
+      left: 50%;
+      transform: translateX(-50%);
     }
 
-    .reaction-menu {
-        bottom: 200px;
-        right: 50%;
-        transform: translateX(50%);
-        width: 95vw;
-        justify-content: center;
-        gap: 8px;
-        padding: 8px;
-    }
-
-    .reaction-menu .btn {
-      padding: 8px 15px;
-      font-size: 1rem;
-    }
-    
-    .center-info-board {
-        top: 45%;
-        transform: translate(-50%, -50%) scale(0.8);
+    /* 第六步：所有牌縮小為 25x35，海底改為 7 列 14 行，空第 6/7 行 */
+    :root {
+      --tile-w: 25px;
+      --tile-h: 35px;
+      --tile-fs: 1.1rem;
+      --river-cols: 7;
+      --river-rows: 14;
+      --river-tile-scale: 1;
+      --river-tile-w: 25px;
+      --river-tile-h: 35px;
     }
 
     .river-area {
-        transform: translate(-50%, -50%) scale(0.7);
+      top: 400px;
+      /* 將中心點固定在距離頂部 400px 的位置 */
+      transform: translate(-50%, -50%);
+      /* 保持左右置中，並讓 400px 成為垂直中心點 */
+      gap: 0px;
+      grid-template-columns: repeat(7, var(--river-tile-w));
+      grid-template-rows: repeat(var(--river-rows), var(--river-tile-h));
+    }
+
+    /* 重新啟用阻擋塊來製造第 6/7 行的空行效果 */
+    .river-center-blocker {
+      display: block;
+      grid-column: 1 / span 7;
+      grid-row: 6 / span 2;
+      height: calc(var(--river-tile-h) * 2);
+      visibility: hidden;
+      /* 保持佔位但不可見 */
+    }
+
+    .river-tile {
+      transform: none;
+      /* 移除縮放造成的視覺間隙 */
+      box-shadow: none;
+      /* 縮小時移除陰影可減少縫隙感 */
+    }
+
+    /* 第七步：結算畫面等比例縮小 (維持寬版佈局) */
+    .overlay-menu {
+      min-width: 92vw;
+      width: 92vw;
+      padding: 15px;
+      gap: 10px;
+    }
+
+    .settlement-header h2 {
+      font-size: 1.6rem;
+    }
+
+    .settlement-subtitle {
+      font-size: 0.9rem;
+    }
+
+    .settlement-info-row {
+      font-size: 0.75rem;
+    }
+
+    .tai-row {
+      font-size: 0.85rem;
+    }
+
+    .tai-total {
+      font-size: 1.1rem;
+    }
+
+    .cash-flow-item {
+      padding: 8px 15px;
+      font-size: 0.85rem;
+    }
+
+    .settlement-actions .btn {
+      padding: 8px 20px !important;
+      font-size: 0.95rem !important;
+    }
+
+    /* 結算畫面牌型大小調為 20x30 */
+    .small-tile .tile,
+    .winning-hand-display .tile {
+      width: 20px !important;
+      height: 30px !important;
+      font-size: 0.85rem !important;
     }
   }
 }

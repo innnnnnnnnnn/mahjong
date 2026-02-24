@@ -21,7 +21,7 @@ const renderTong = (value: number) => {
     const add = (top: string, left: string, color: string) => dots.push({ top, left, color });
 
     if (value === 1) {
-        return <div style={{ width: '24px', height: '24px', borderRadius: '50%', backgroundColor: R, position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', boxShadow: 'inset -2px -2px 6px rgba(0,0,0,0.4)', border: '2px solid #a00' }} />;
+        return <div style={{ width: 'calc(var(--tile-fs) * 1.1)', height: 'calc(var(--tile-fs) * 1.1)', borderRadius: '50%', backgroundColor: R, position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', boxShadow: 'inset -2px -2px 6px rgba(0,0,0,0.4)', border: '1px solid #a00' }} />;
     }
 
     const T = '22%', M = '50%', B_POS = '78%', L = '25%', C = '50%', R_POS = '75%';
@@ -58,7 +58,7 @@ const renderTong = (value: number) => {
                 <div key={i} style={{
                     position: 'absolute',
                     top: d.top, left: d.left,
-                    width: '10px', height: '10px',
+                    width: 'calc(var(--tile-fs) * 0.45)', height: 'calc(var(--tile-fs) * 0.45)',
                     borderRadius: '50%',
                     backgroundColor: d.color,
                     transform: 'translate(-50%, -50%)',
@@ -73,7 +73,7 @@ const renderTiao = (value: number) => {
     const sticks: { top: string, left: string, color: string, rot?: number, width?: string, height?: string }[] = [];
     const R = '#d32f2f', B = '#1976d2', G = '#2e7d32';
 
-    const add = (top: string, left: string, color: string, rot = 0, width = '6px', height = '16px') =>
+    const add = (top: string, left: string, color: string, rot = 0, width = 'calc(var(--tile-fs) * 0.25)', height = 'calc(var(--tile-fs) * 0.65)') =>
         sticks.push({ top, left, color, rot, width, height });
 
     const L = '35%', C = '50%', R_POS = '65%';
@@ -95,11 +95,11 @@ const renderTiao = (value: number) => {
     }
     if (value === 8) {
         // Top row : \ / \ / (V V)
-        add('28%', '25%', G, 25, '4px', '14px'); add('28%', '42%', G, -25, '4px', '14px');
-        add('28%', '58%', G, 25, '4px', '14px'); add('28%', '75%', G, -25, '4px', '14px');
+        add('28%', '25%', G, 25, 'calc(var(--tile-fs) * 0.18)', 'calc(var(--tile-fs) * 0.6)'); add('28%', '42%', G, -25, 'calc(var(--tile-fs) * 0.18)', 'calc(var(--tile-fs) * 0.6)');
+        add('28%', '58%', G, 25, 'calc(var(--tile-fs) * 0.18)', 'calc(var(--tile-fs) * 0.6)'); add('28%', '75%', G, -25, 'calc(var(--tile-fs) * 0.18)', 'calc(var(--tile-fs) * 0.6)');
         // Bottom row: / \ / \ (^ ^)
-        add('72%', '25%', R, -25, '4px', '14px'); add('72%', '42%', R, 25, '4px', '14px');
-        add('72%', '58%', R, -25, '4px', '14px'); add('72%', '75%', R, 25, '4px', '14px');
+        add('72%', '25%', R, -25, 'calc(var(--tile-fs) * 0.18)', 'calc(var(--tile-fs) * 0.6)'); add('72%', '42%', R, 25, 'calc(var(--tile-fs) * 0.18)', 'calc(var(--tile-fs) * 0.6)');
+        add('72%', '58%', R, -25, 'calc(var(--tile-fs) * 0.18)', 'calc(var(--tile-fs) * 0.6)'); add('72%', '75%', R, 25, 'calc(var(--tile-fs) * 0.18)', 'calc(var(--tile-fs) * 0.6)');
     }
     if (value === 9) {
         [R, R, R].forEach((col, i) => add('20%', `${25 + i * 25}%`, col));
@@ -110,7 +110,7 @@ const renderTiao = (value: number) => {
     return (
         <div style={{ position: 'relative', width: '100%', height: '100%' }}>
             {value === 1 ? (
-                <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', color: G, fontSize: '2.5rem', fontWeight: 'bold' }}>
+                <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', color: G, fontSize: 'calc(var(--tile-fs) * 1.5)', fontWeight: 'bold' }}>
                     🀐
                 </div>
             ) : sticks.map((s, i) => (
@@ -132,8 +132,8 @@ const renderTiao = (value: number) => {
 const renderWan = (display: string) => {
     return (
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', width: '100%', fontWeight: 'bold' }}>
-            <span style={{ fontSize: '1.2rem', color: '#1976d2', marginBottom: '0px' }}>{display[0]}</span>
-            <span style={{ fontSize: '1.4rem', color: '#d32f2f', marginTop: '-4px' }}>{display[1]}</span>
+            <span style={{ fontSize: 'calc(var(--tile-fs) * 0.7)', color: '#1976d2', marginBottom: '0px' }}>{display[0]}</span>
+            <span style={{ fontSize: 'var(--tile-fs)', color: '#d32f2f', marginTop: '-4px' }}>{display[1]}</span>
         </div>
     );
 }
@@ -143,12 +143,12 @@ const renderGeneric = (display: string, color: string) => {
     if (display.length === 2) {
         return (
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', width: '100%', fontWeight: 'bold' }}>
-                <span style={{ fontSize: '1.2rem', color: color, marginBottom: '0px' }}>{display[0]}</span>
-                <span style={{ fontSize: '1.2rem', color: color, marginTop: '-4px' }}>{display[1]}</span>
+                <span style={{ fontSize: 'var(--tile-fs)', color: color, marginBottom: '0px' }}>{display[0]}</span>
+                <span style={{ fontSize: 'var(--tile-fs)', color: color, marginTop: '-4px' }}>{display[1]}</span>
             </div>
         );
     }
-    return <div style={{ color, fontSize: display.length > 1 ? '1.5rem' : '1.8rem', whiteSpace: 'pre-wrap' }}>{display}</div>;
+    return <div style={{ color, fontSize: 'var(--tile-fs)', whiteSpace: 'pre-wrap' }}>{display}</div>;
 }
 
 
