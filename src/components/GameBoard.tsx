@@ -350,10 +350,6 @@ const GameBoard: React.FC<GameBoardProps> = ({ mode, roomId, username, onBack })
                             <button className="btn btn-primary" onClick={handleRollDice} style={{ fontSize: '1.5rem', padding: '15px 40px' }}>
                                 擲骰子開局
                             </button>
-                        ) : (gameState.activePlayerIndex === myPlayerIndex && gameState.status === 'PLAYING' && player.hand.length === 16) ? (
-                            <button className="btn btn-action btn-juice" onClick={drawCard} style={{ fontSize: '1.5rem', padding: '15px 40px', background: 'var(--accent-gold)', color: 'black' }}>
-                                摸牌
-                            </button>
                         ) : showDice && gameState.dice && gameState.dice.length > 0 ? (
                             <div className="dice-display" style={{ fontSize: '2rem' }}>
                                 🎲 {gameState.dice.reduce((a, b) => a + b, 0)} <span style={{ fontSize: '0.6em' }}>({gameState.dice.join(' ')})</span>
