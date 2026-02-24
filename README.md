@@ -3,7 +3,8 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://github.com/innnnnnnnnnn/mahjong/releases/tag/v1.0.0)
 
-這是一個基於 React + TypeScript + Socket.io 開發的現代化台灣 16 張麻將連線對局系統。支援多人即時對戰、豐富的角色配音、以及全自動化的智能遊戲流程。
+這是一個基於 React + TypeScript + Socket.io 開發的現代化台灣 16 張麻將連線對局系統。
+支援多人即時對戰、豐富的角色配音、以及全自動化的智能遊戲流程。
 
 ---
 
