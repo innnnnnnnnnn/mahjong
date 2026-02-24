@@ -28,6 +28,8 @@ jobs:
         env:
           VITE_SOCKET_URL: https://mahjong-zayy.onrender.com
           VITE_LIFF_ID: 2009183123-VjyOYar4
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
