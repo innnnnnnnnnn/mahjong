@@ -30,7 +30,8 @@ const GameBoard: React.FC<GameBoardProps> = ({ mode, roomId, username, onBack })
         isConnecting,
         roomData,
         myPlayerIndex,
-        addAI
+        addAI,
+        connectionError
     } = useMahjongGame(isMultiplayer, roomId, username);
 
     const [showDice, setShowDice] = useState(false);
@@ -126,7 +127,18 @@ const GameBoard: React.FC<GameBoardProps> = ({ mode, roomId, username, onBack })
         return tile.value;
     };
 
-    if (isConnecting) return <div className="loading">Connecting to Server...</div>;
+    if (isConnecting) {
+        return (
+            <div className="loading" style={{ flexDirection: 'column', gap: '20px', padding: '40px', textAlign: 'center' }}>
+                <div>Connecting to Server...</div>
+                {connectionError && (
+                    <div style={{ color: '#ff6b6b', fontSize: '0.9rem', maxWidth: '300px', background: 'rgba(0,0,0,0.3)', padding: '15px', borderRadius: '10px' }}>
+                        {connectionError}
+                    </div>
+                )}
+            </div>
+        );
+    }
 
     // Lobby / Waiting Room UI
     if (!gameState && roomData) {
