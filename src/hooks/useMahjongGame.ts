@@ -769,176 +769,140 @@ export const useMahjongGame = (isMultiplayer: boolean = false, roomId: string = 
     }, [gameState?.status, performDealing, replaceFlowers]);
 
     // AI Reaction logic (Pung/Pass/Hu intercept)
-    useEffect(() => {
-        const isHost = roomData?.hostId === socket.id;
-        // In multiplayer, ONLY the host manages AI automation
-        if (isMultiplayer && !isHost) return;
-        if (!gameState || gameState.status !== 'ACTION_WINDOW') return;
 
-        const discarderIdx = gameState.activePlayerIndex;
-        const lastTile = gameState.lastDiscard;
-        if (!lastTile) return;
+// AI Reaction logic (Pung/Pass/Hu intercept)
+useEffect(() => {
+    const isHost = roomData?.hostId === socket.id;
+    // In multiplayer, ONLY the host manages AI automation
+    if (isMultiplayer && !isHost) return;
+    if (!gameState || gameState.status !== 'ACTION_WINDOW') return;
 
-        const timer = setTimeout(() => {
-            const players = gameState.players;
-            let huProcessed = false;
+    const discarderIdx = gameState.activePlayerIndex;
+    const lastTile = gameState.lastDiscard;
+    if (!lastTile) return;
 
-            // 1. Check for HU using Intercepting Hu (攔胡) order: Next(1), Opposite(2), Previous(3)
-            for (let i = 1; i <= 3; i++) {
-                const pIdx = (discarderIdx + i) % 4;
-                const p = players[pIdx];
-                if (isHu([...p.hand, lastTile])) {
-                    if (p.isAI || p.isTing) {
-                        console.log(`Player ${p.name} performs Auto-HU! Intercept sequence: ${i}`);
-                        processAction(pIdx, 'HU');
-                        huProcessed = true;
-                        return;
-                    }
-                }
-            }
+    const players = gameState.players;
 
-            if (huProcessed) return;
+    // 1. Check if ANY human player can perform an action.
+    let humanCanAct = false;
+    for (let i = 0; i < 4; i++) {
+        const p = players[i];
+        if (p.isAI) continue;
 
-            // 2. Check if ANY human player (who is NOT in Ting mode) can perform an action.
-            // If so, we MUST stop here and wait for their socket signals.
-            let humanCanAct = false;
-            for (let i = 0; i < 4; i++) {
-                const p = players[i];
-                if (p.isAI) continue;
-                if (p.isTing) continue; // Ting players are automatic
+        const canHu = i !== discarderIdx && isHu([...p.hand, lastTile]);
+        const canPAction = i !== discarderIdx && canPung(p.hand, lastTile);
+        const canCAction = (i === (discarderIdx + 1) % 4) && canChow(p.hand, lastTile).length > 0;
+        const canKAction = i !== discarderIdx && canMingKong(p.hand, lastTile);
 
-                const canHu = i !== discarderIdx && isHu([...p.hand, lastTile]);
-                const canPAction = i !== discarderIdx && canPung(p.hand, lastTile);
-                // Chow only for the player immediately after the discarder
-                const canCAction = (i === (discarderIdx + 1) % 4) && canChow(p.hand, lastTile).length > 0;
-                const canKAction = i !== discarderIdx && canMingKong(p.hand, lastTile);
+        if (canHu || canPAction || canCAction || canKAction) {
+            humanCanAct = true;
+            break;
+        }
+    }
 
-                if (canHu || canPAction || canCAction || canKAction) {
-                    humanCanAct = true;
-                    break;
-                }
-            }
+    if (humanCanAct) return; // Wait indefinitely for human decision
 
-            if (humanCanAct) {
-                // Important: If a human can act, host browser must NOT auto-pass.
+    const timer = setTimeout(() => {
+        // 2. AI Hu logic
+        for (let i = 1; i <= 3; i++) {
+            const pIdx = (discarderIdx + i) % 4;
+            const p = players[pIdx];
+            if (p.isAI && isHu([...p.hand, lastTile])) {
+                console.log(`AI Player ${p.name} performs Auto-HU!`);
+                processAction(pIdx, 'HU');
                 return;
             }
+        }
 
-            // 3. User can't act or requested to be automatic. Evaluate AI logic (Pung > Chow)
-            for (let i = 1; i <= 3; i++) {
-                const pIdx = (discarderIdx + i) % 4;
-                const ai = players[pIdx];
-                if (!ai.isAI) continue; // Only process AI players here
+        // 3. AI Reaction logic (Pung > Chow)
+        for (let i = 1; i <= 3; i++) {
+            const pIdx = (discarderIdx + i) % 4;
+            const ai = players[pIdx];
+            if (!ai.isAI) continue;
 
-                if (shouldAction(ai.hand, lastTile, 'PUNG')) {
-                    console.log(`AI ${ai.name} performs PUNG!`);
-                    processAction(pIdx, 'PUNG');
-                    return;
-                }
+            if (shouldAction(ai.hand, lastTile, 'PUNG')) {
+                console.log(`AI ${ai.name} performs PUNG!`);
+                processAction(pIdx, 'PUNG');
+                return;
             }
+        }
 
-            // Chow check for next AI player
-            const nextIdx = (discarderIdx + 1) % 4;
-            const nextP = players[nextIdx];
-            if (nextP.isAI) {
-                if (shouldAction(nextP.hand, lastTile, 'CHOW')) {
-                    console.log(`AI ${nextP.name} performs CHOW!`);
-                    processAction(nextIdx, 'CHOW');
-                    return;
-                }
+        const nextIdx = (discarderIdx + 1) % 4;
+        const nextP = players[nextIdx];
+        if (nextP.isAI && shouldAction(nextP.hand, lastTile, 'CHOW')) {
+            console.log(`AI ${nextP.name} performs CHOW!`);
+            processAction(nextIdx, 'CHOW');
+            return;
+        }
+
+        // 4. No one acts. Pass.
+        processAction(discarderIdx, 'PASS');
+    }, 1200);
+
+    return () => clearTimeout(timer);
+}, [isMultiplayer, gameState?.status, gameState?.activePlayerIndex, gameState?.lastDiscard, processAction, gameState?.players, roomData?.hostId]);
+
+// Turn Effect (Auto-draw / AI Play)
+useEffect(() => {
+    const isHost = roomData?.hostId === socket.id;
+    if (isMultiplayer && !isHost) return;
+    if (!gameState || gameState.status !== 'PLAYING') return;
+
+    const currentPlayer = gameState.players[gameState.activePlayerIndex];
+    if (!currentPlayer.isAI) return; // Humans play manually
+
+    const timer = setTimeout(() => {
+        if (currentPlayer.hand.length % 3 === 1) {
+            drawCard();
+        } else if (currentPlayer.hand.length % 3 === 2) {
+            if (isHu(currentPlayer.hand)) {
+                processAction(gameState.activePlayerIndex, 'HU');
+                return;
             }
-
-            // 4. No one (Human or AI) wants to act. Pass automatically.
-            processAction(discarderIdx, 'PASS');
-
-        }, 1200);
-
-        return () => clearTimeout(timer);
-    }, [isMultiplayer, gameState?.status, gameState?.activePlayerIndex, gameState?.lastDiscard, processAction, gameState?.players]);
-
-
-    // Turn Effect (Auto-draw / AI Play)
-    useEffect(() => {
-        const isHost = roomData?.hostId === socket.id;
-        // In multiplayer, ONLY the host manages AI automation
-        if (isMultiplayer && !isHost) return;
-        if (!gameState || gameState.status !== 'PLAYING') return;
-
-        const currentPlayer = gameState.players[gameState.activePlayerIndex];
-
-        const timer = setTimeout(() => {
-            if (currentPlayer.isAI) {
-                if (currentPlayer.hand.length % 3 === 1) {
-                    console.log(`AI ${currentPlayer.name} drawing card...`);
-                    drawCard();
-                } else if (currentPlayer.hand.length % 3 === 2) {
-                    // AI 判斷是否胡牌 (自摸)
-                    if (isHu(currentPlayer.hand)) {
-                        console.log(`AI ${currentPlayer.name} performs ZIMO!`);
-                        processAction(gameState.activePlayerIndex, 'HU');
-                        return;
-                    }
-
-                    // AI 判斷是否槓牌
-                    const ak = canAnKong(currentPlayer.hand);
-                    if (ak.length > 0) {
-                        console.log(`AI ${currentPlayer.name} performs ANKONG!`);
-                        processAction(gameState.activePlayerIndex, 'ANKONG', { combo: ak[0] });
-                        return;
-                    }
-                    const jk = canJiaKong(currentPlayer.hand, currentPlayer.exposedSets);
-                    if (jk.length > 0) {
-                        console.log(`AI ${currentPlayer.name} performs JIAKONG!`);
-                        processAction(gameState.activePlayerIndex, 'JIAKONG', { tile: jk[0].tile });
-                        return;
-                    }
-
-                    console.log(`AI ${currentPlayer.name} discarding card...`);
-                    const tileToDiscard = decideDiscard(currentPlayer.hand, 'MEDIUM');
-                    discardTile(tileToDiscard.id);
-                }
-            } else {
-                // User Auto-draw
-                if (currentPlayer.hand.length % 3 === 1) {
-                    drawCard();
-                } else if (currentPlayer.hand.length % 3 === 2 && currentPlayer.isTing) {
-                    // Auto discard for Ting user (discard the freshly drawn tile, last in array)
-                    const tileToDiscard = currentPlayer.hand[currentPlayer.hand.length - 1];
-                    discardTile(tileToDiscard.id);
-                }
+            const ak = canAnKong(currentPlayer.hand);
+            if (ak.length > 0) {
+                processAction(gameState.activePlayerIndex, 'ANKONG', { combo: ak[0] });
+                return;
             }
-        }, currentPlayer.isAI ? 1000 : 300); // Faster draw for user
+            const jk = canJiaKong(currentPlayer.hand, currentPlayer.exposedSets);
+            if (jk.length > 0) {
+                processAction(gameState.activePlayerIndex, 'JIAKONG', { tile: jk[0].tile });
+                return;
+            }
+            const tileToDiscard = decideDiscard(currentPlayer.hand, 'MEDIUM');
+            discardTile(tileToDiscard.id);
+        }
+    }, 1000);
 
-        return () => clearTimeout(timer);
-    }, [
+    return () => clearTimeout(timer);
+}, [
+    gameState?.status,
+    gameState?.activePlayerIndex,
+    gameState?.players,
+    gameState?.pendingJiakong,
+    gameState?.lastDiscard,
+    gameState?.deck.length,
+    isMultiplayer,
+    drawCard,
+    discardTile,
+    processAction,
+    roomData?.hostId
+]);
 
-        gameState?.status,
-        gameState?.activePlayerIndex,
-        gameState?.players,
-        gameState?.pendingJiakong,
-        gameState?.lastDiscard,
-        gameState?.deck.length,
-        isMultiplayer,
-        drawCard,
-        discardTile
-    ]);
-
-
-
-    return {
-        gameState,
-        initGame,
-        rollDice,
-        drawCard,
-        discardTile,
-        processAction,
-        selectedTileId,
-        setSelectedTileId,
-        isConnecting,
-        roomData,
-        myPlayerIndex,
-        addAI
-    };
+return {
+    gameState,
+    initGame,
+    rollDice,
+    drawCard,
+    discardTile,
+    processAction,
+    selectedTileId,
+    setSelectedTileId,
+    isConnecting,
+    roomData,
+    myPlayerIndex,
+    addAI
+};
 };
 
-
+export default useMahjongGame;

@@ -73,7 +73,7 @@ const GameBoard: React.FC<GameBoardProps> = ({ mode, roomId, username, onBack })
         if (gameState.activePlayerIndex !== myPlayerIndex) return;
 
         const player = gameState.players[myPlayerIndex];
-        if (player.isTing) return; // Cannot manually play while in Ting mode
+        // Only restrict interaction if it's not the player's turn to discard
         if (player.hand.length % 3 !== 2) return;
 
         if (selectedTileId === tileId) {
@@ -350,6 +350,10 @@ const GameBoard: React.FC<GameBoardProps> = ({ mode, roomId, username, onBack })
                             <button className="btn btn-primary" onClick={handleRollDice} style={{ fontSize: '1.5rem', padding: '15px 40px' }}>
                                 擲骰子開局
                             </button>
+                        ) : (gameState.activePlayerIndex === myPlayerIndex && gameState.status === 'PLAYING' && player.hand.length === 16) ? (
+                            <button className="btn btn-action btn-juice" onClick={drawCard} style={{ fontSize: '1.5rem', padding: '15px 40px', background: 'var(--accent-gold)', color: 'black' }}>
+                                摸牌
+                            </button>
                         ) : showDice && gameState.dice && gameState.dice.length > 0 ? (
                             <div className="dice-display" style={{ fontSize: '2rem' }}>
                                 🎲 {gameState.dice.reduce((a, b) => a + b, 0)} <span style={{ fontSize: '0.6em' }}>({gameState.dice.join(' ')})</span>
@@ -366,24 +370,21 @@ const GameBoard: React.FC<GameBoardProps> = ({ mode, roomId, username, onBack })
                 )}
 
                 <div className="main-controls">
-                    {gameState.status === 'PLAYING' && isMyTurn && !player.isTing && (
+                    {gameState.status === 'PLAYING' && isMyTurn && (
                         <>
-                            {player.hand.length === 16 && (
-                                <button className="btn btn-action" onClick={drawCard}>摸牌</button>
-                            )}
                             {player.hand.length === 17 && (
                                 <>
-                                    {canUserTing && (
-                                        <button className="btn btn-action" style={{ background: 'var(--accent-gold)', color: 'black' }} onClick={() => processAction(0, 'TING')}>聽牌</button>
+                                    {!player.isTing && canUserTing && (
+                                        <button className="btn btn-action" style={{ background: 'var(--accent-gold)', color: 'black' }} onClick={() => processAction(myPlayerIndex, 'TING')}>聽牌</button>
                                     )}
                                     {canUserPlayHu && (
-                                        <button className="btn btn-hu" onClick={() => processAction(0, 'HU')}>胡牌</button>
+                                        <button className="btn btn-hu" onClick={() => processAction(myPlayerIndex, 'HU')}>胡牌</button>
                                     )}
-                                    {canUserAnKong && (
-                                        <button className="btn btn-action" onClick={() => processAction(0, 'ANKONG', { combo: anKongCombos[0] })}>暗槓</button>
+                                    {!player.isTing && canUserAnKong && (
+                                        <button className="btn btn-action" onClick={() => processAction(myPlayerIndex, 'ANKONG', { combo: anKongCombos[0] })}>暗槓</button>
                                     )}
-                                    {canUserJiaKong && (
-                                        <button className="btn btn-action" onClick={() => processAction(0, 'JIAKONG', { tile: jiaKongCombos[0].tile })}>槓</button>
+                                    {!player.isTing && canUserJiaKong && (
+                                        <button className="btn btn-action" onClick={() => processAction(myPlayerIndex, 'JIAKONG', { tile: jiaKongCombos[0].tile })}>槓</button>
                                     )}
                                 </>
                             )}
