@@ -22,7 +22,6 @@ const GameBoard: React.FC<GameBoardProps> = ({ mode, roomId, username, onBack })
         gameState,
         initGame,
         rollDice,
-        drawCard,
         discardTile,
         processAction,
         selectedTileId,
