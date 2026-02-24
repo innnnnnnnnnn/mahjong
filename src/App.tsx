@@ -15,9 +15,23 @@ function App() {
   const [showSettings, setShowSettings] = useState(false);
 
   useEffect(() => {
+    // Check for room invitation in URL
+    const params = new URLSearchParams(window.location.search);
+    const inviteRoomId = params.get('room');
+
     // Basic session persistence for guest login
     const savedUser = localStorage.getItem('mahjong_user');
-    if (savedUser) {
+
+    if (inviteRoomId) {
+      setRoomId(inviteRoomId.toUpperCase());
+      if (savedUser) {
+        setUsername(savedUser);
+        setMode('MULTI');
+        connectSocket();
+      } else {
+        setMode('AUTH');
+      }
+    } else if (savedUser) {
       setUsername(savedUser);
       setMode('LOBBY');
       connectSocket();
@@ -42,7 +56,17 @@ function App() {
   const handleLogin = (name: string) => {
     setUsername(name);
     localStorage.setItem('mahjong_user', name);
-    setMode('LOBBY');
+
+    // Check if there's a room in the URL to join after login
+    const params = new URLSearchParams(window.location.search);
+    const inviteRoomId = params.get('room');
+
+    if (inviteRoomId) {
+      setRoomId(inviteRoomId.toUpperCase());
+      setMode('MULTI');
+    } else {
+      setMode('LOBBY');
+    }
     connectSocket();
   };
 
@@ -71,6 +95,11 @@ function App() {
   };
 
   const handleBackToLobby = () => {
+    // Clear room param from URL when returning to lobby
+    const url = new URL(window.location.href);
+    url.searchParams.delete('room');
+    window.history.replaceState({}, '', url.toString());
+
     setMode('LOBBY');
   };
 

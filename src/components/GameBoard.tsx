@@ -118,7 +118,9 @@ const GameBoard: React.FC<GameBoardProps> = ({ mode, roomId, username, onBack })
         const isHost = myPlayer?.isHost || roomData.hostId === socket.id;
 
         const handleCopyLink = () => {
-            navigator.clipboard.writeText(window.location.href);
+            const baseUrl = window.location.origin + window.location.pathname;
+            const inviteUrl = `${baseUrl}?room=${roomId}`;
+            navigator.clipboard.writeText(inviteUrl);
             alert("📋 複製邀請連結成功！請分享給好友。");
         };
 
