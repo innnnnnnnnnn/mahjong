@@ -43,8 +43,8 @@
     --gap: clamp(1.2px, 0.5 * var(--u), 5px);
 
     --edge: clamp(8px, 2.0 * var(--u), 18px);
-    --pi-left-x: calc(0px + var(--edge) + 10px);
-    --pi-right-x: calc(0px + var(--edge) + 10px);
+    --pi-left-x: calc(0px + var(--edge) + 15px);
+    --pi-right-x: calc(0px + var(--edge) + 15px);
     --pi-top-y: calc(0px + var(--edge) + 0px);
     --pi-bot-y: calc(0px + var(--edge) + 0px);
     --river-y: calc(var(--pi-top-y) + 45px);
@@ -2111,17 +2111,17 @@ input:checked+.slider:before {
 
 .ai-suggest-arrow {
   position: absolute;
-  top: -35px;
-  /* 足夠高，不遮擋手牌 */
+  top: -40px;
+  /* 稍微再拉高一點 */
   left: 50%;
   transform: translateX(-50%);
   color: #ffeb3b;
-  /* 亮黃色 */
   font-size: 1.8rem;
   font-weight: bold;
   pointer-events: none;
-  z-index: 100;
-  text-shadow: 0 0 8px rgba(0, 0, 0, 0.9);
+  z-index: 1001;
+  /* 確保在最上層 */
+  text-shadow: 0 0 10px rgba(0, 0, 0, 1), 0 0 5px rgba(0, 0, 0, 1);
   animation: bounceArrow 0.6s infinite alternate;
 }
 
@@ -2190,9 +2190,11 @@ input:checked+.slider:before {
       width: 100vw !important;
       max-width: 100vw !important;
       overflow-x: auto !important;
-      overflow-y: hidden !important;
+      overflow-y: visible !important;
+      /* 想要看到箭頭，但 overflow-x 為 auto 時這行通常無效 */
       justify-content: flex-start !important;
-      padding: 5px 20px !important;
+      padding: 45px 20px 5px 20px !important;
+      /* 上方留 45px 給提示箭頭 */
       pointer-events: auto !important;
       -webkit-overflow-scrolling: touch;
     }
