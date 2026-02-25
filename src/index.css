@@ -43,10 +43,10 @@
     --gap: clamp(1.2px, 0.5 * var(--u), 5px);
 
     --edge: clamp(8px, 2.0 * var(--u), 18px);
-    --pi-left-x: calc(0px + var(--edge) + 110px);
-    --pi-right-x: calc(0px + var(--edge) + 110px);
-    --pi-top-y: calc(0px + var(--edge) + 95px);
-    --pi-bot-y: calc(0px + var(--edge) + 100px);
+    --pi-left-x: calc(0px + var(--edge) + 10px);
+    --pi-right-x: calc(0px + var(--edge) + 10px);
+    --pi-top-y: calc(0px + var(--edge) + 10px);
+    --pi-bot-y: calc(0px + var(--edge) + 10px);
     --river-y: calc(var(--pi-top-y) + 45px);
 
     --v-tile-w: var(--tile-w);
@@ -76,10 +76,10 @@
     --gap: clamp(2px, 0.7 * var(--u), 8px);
 
     --edge: clamp(6px, 1.6 * var(--u), 14px);
-    --pi-left-x: calc(0px + var(--edge) + 110px);
-    --pi-right-x: calc(0px + var(--edge) + 110px);
-    --pi-top-y: calc(0px + var(--edge) + 95px);
-    --pi-bot-y: calc(0px + var(--edge) + 100px);
+    --pi-left-x: calc(0px + var(--edge) + 10px);
+    --pi-right-x: calc(0px + var(--edge) + 10px);
+    --pi-top-y: calc(0px + var(--edge) + 10px);
+    --pi-bot-y: calc(0px + var(--edge) + 10px);
     --river-y: calc(var(--pi-top-y) + 40px);
 
     --v-tile-w: var(--tile-w);
