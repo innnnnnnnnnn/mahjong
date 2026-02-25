@@ -45,8 +45,8 @@
     --edge: clamp(8px, 2.0 * var(--u), 18px);
     --pi-left-x: calc(0px + var(--edge) + 10px);
     --pi-right-x: calc(0px + var(--edge) + 10px);
-    --pi-top-y: calc(0px + var(--edge) + 10px);
-    --pi-bot-y: calc(0px + var(--edge) + 10px);
+    --pi-top-y: calc(0px + var(--edge) + 0px);
+    --pi-bot-y: calc(0px + var(--edge) + 0px);
     --river-y: calc(var(--pi-top-y) + 45px);
 
     --v-tile-w: var(--tile-w);
@@ -2153,21 +2153,21 @@ input:checked+.slider:before {
   /* PORTRAIT SPECIFIC: 保留其餘 UI 調整 */
   @media (orientation: portrait) {
 
-    /* 手牌區位置改為四桌邊+20px */
+    /* 手牌區位置：我和對家桌邊+35px，左右家桌邊+25px */
     .player-bottom {
-      bottom: 20px !important;
+      bottom: 35px !important;
     }
 
     .player-top {
-      top: 20px !important;
+      top: 35px !important;
     }
 
     .player-left {
-      left: 20px !important;
+      left: 25px !important;
     }
 
     .player-right {
-      right: 20px !important;
+      right: 25px !important;
     }
 
     /* 手牌區改回 1列 (flex-row) */
