@@ -41,16 +41,16 @@ const RoomScreen: React.FC<RoomScreenProps> = ({
                     </div>
                     <div className="room-header-actions">
                         <button
-                            onClick={onLeaveRoom}
-                            className="btn-leave-room"
-                        >
-                            🏠 返回大廳
-                        </button>
-                        <button
                             onClick={onCopyLink}
                             className="btn-copy-link"
                         >
                             📋 複製邀請連結
+                        </button>
+                        <button
+                            onClick={onLeaveRoom}
+                            className="btn-leave-room"
+                        >
+                            🏠 返回大廳
                         </button>
                     </div>
                 </div>

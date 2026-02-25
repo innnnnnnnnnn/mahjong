@@ -2443,82 +2443,90 @@ input:checked+.slider:before {
       font-size: 1.1rem !important;
     }
 
-    /* 房間 Room */
+    /* 房間 Room (改為與電腦版/橫向版一樣) */
     .room-screen-container {
-      padding: 10px !important;
+      padding: clamp(10px, 2vw, 30px) !important;
       justify-content: center !important;
-      /* 上下置中 */
     }
 
     .room-panel {
-      padding: clamp(15px, 3vh, 30px) !important;
+      padding: clamp(20px, 4vw, 40px) !important;
       max-height: 95vh !important;
       width: 95% !important;
-      max-width: 500px !important;
-      /* 平板寬度上限 */
-      border-radius: 15px !important;
+      max-width: 600px !important;
+      border-radius: 20px !important;
       display: flex !important;
       flex-direction: column !important;
     }
 
     .room-header {
-      margin-bottom: 10px !important;
-      gap: 10px !important;
+      display: flex !important;
+      flex-direction: row !important;
+      /* 橫向排列 */
+      justify-content: space-between !important;
+      align-items: flex-start !important;
+      margin-bottom: 20px !important;
+      gap: 15px !important;
     }
 
     .room-title {
-      font-size: 1.3rem !important;
+      font-size: clamp(1.4rem, 4vw, 1.8rem) !important;
     }
 
     .room-header-actions {
       display: flex !important;
-      flex-direction: column !important;
-      gap: 8px !important;
-      width: 100% !important;
-      margin-top: 5px !important;
+      flex-direction: row !important;
+      /* 橫向排列 */
+      flex-wrap: wrap !important;
+      gap: 10px !important;
+      width: auto !important;
+      justify-content: flex-end !important;
     }
 
     .btn-leave-room,
     .btn-copy-link {
-      width: 100% !important;
-      padding: 10px 15px !important;
-      font-size: 0.9rem !important;
+      width: auto !important;
+      /* 不再強制滿版 */
+      padding: 10px 20px !important;
+      font-size: 1rem !important;
       flex: none !important;
+      border-radius: 9999px !important;
     }
 
     .player-slots-container {
       max-height: none !important;
       overflow: visible !important;
-      gap: 8px !important;
-      margin-bottom: 15px !important;
-      margin-top: 10px !important;
+      gap: 12px !important;
+      margin-bottom: 20px !important;
     }
 
     .player-slot {
-      padding: 8px 12px !important;
+      padding: 12px 16px !important;
     }
 
     .slot-avatar {
-      width: 2.2rem !important;
-      height: 2.2rem !important;
-      font-size: 1rem !important;
+      width: 2.8rem !important;
+      height: 2.8rem !important;
+      font-size: 1.2rem !important;
     }
 
     .slot-name {
-      font-size: 0.9rem !important;
+      font-size: 1.1rem !important;
     }
 
     .room-actions-footer {
-      gap: 10px !important;
-      display: flex !important;
-      flex-direction: column !important;
+      display: grid !important;
+      grid-template-columns: 1fr 1fr !important;
+      /* 改回 2 列網格 */
+      gap: 15px !important;
     }
 
     .btn-ready,
     .btn-start-game,
     .btn-cancel-ready {
-      padding: 12px !important;
-      font-size: 1.1rem !important;
+      padding: 14px !important;
+      font-size: 1.2rem !important;
+      width: 100% !important;
     }
   }
 }
