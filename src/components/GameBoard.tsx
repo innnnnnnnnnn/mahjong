@@ -224,7 +224,10 @@ const GameBoard: React.FC<GameBoardProps> = ({ mode, roomId, username, onBack })
                 <div className="river-area">
                     <div className="river-center-blocker"></div>
                     {gameState.globalDiscards?.map((discardInfo, i) => (
-                        <Tile key={`g-discard-${discardInfo.tile.id}-${i}`} tile={discardInfo.tile} className="river-tile" />
+                        <div key={`g-discard-${discardInfo.tile.id}-${i}`} style={{ display: 'contents' }}>
+                            {i > 0 && i % 6 === 0 && <div className="river-spacer" />}
+                            <Tile tile={discardInfo.tile} className="river-tile" />
+                        </div>
                     ))}
                 </div>
 

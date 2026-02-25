@@ -92,25 +92,31 @@
     --river-tile-h: var(--tile-h);
   }
 
-  /* 橫向海底：10列1行 左右滑動 */
+  /* 橫向海底：中央左右各6列 (12列1行)，避開中央資訊欄 */
   .river-area {
+    position: absolute;
     top: 50% !important;
-    left: 50% !important;
-    transform: translate(-50%, calc(-50% - 60px)) !important;
-    /* Positioned slightly above/around center */
-    width: calc(var(--tile-w) * 10 + 30px) !important;
-    height: calc(var(--tile-h) + 15px) !important;
+    left: 10px !important;
+    right: 10px !important;
+    transform: translateY(-50%) !important;
     display: flex !important;
+    flex-direction: row !important;
     flex-wrap: nowrap !important;
+    justify-content: center !important;
+    align-items: center !important;
     overflow-x: auto !important;
     overflow-y: hidden !important;
-    gap: 2px !important;
-    padding: 5px !important;
-    background: rgba(0, 0, 0, 0.2) !important;
-    border-radius: 8px !important;
     pointer-events: auto !important;
-    justify-content: flex-start !important;
-    scrollbar-width: thin;
+    z-index: 40;
+    padding: 0 40px !important;
+    gap: 2px !important;
+  }
+
+  .river-spacer {
+    flex-shrink: 0 !important;
+    width: 200px !important;
+    /* 這個空間避開了中央資訊欄 */
+    height: 10px;
   }
 
   .river-area .river-tile {
@@ -2135,7 +2141,8 @@ input:checked+.slider:before {
     /* 手牌改為 8列2行 */
     .player-bottom .hand {
       flex-wrap: wrap;
-      max-width: calc(var(--tile-w) * 8 + 10px);
+      width: calc(var(--tile-w) * 8 + 30px) !important;
+      max-width: none !important;
       justify-content: center;
     }
 
