@@ -34,6 +34,12 @@ const RoomScreen: React.FC<RoomScreenProps> = ({
     return (
         <div className="room-screen-container">
             <div className="room-panel">
+                <button
+                    onClick={onLeaveRoom}
+                    className="btn-leave-room-room"
+                >
+                    🏠 返回大廳
+                </button>
                 <div className="room-header">
                     <div>
                         <h1 className="room-title">房號: {roomId}</h1>
@@ -45,12 +51,6 @@ const RoomScreen: React.FC<RoomScreenProps> = ({
                             className="btn-copy-link"
                         >
                             📋 複製邀請連結
-                        </button>
-                        <button
-                            onClick={onLeaveRoom}
-                            className="btn-leave-room"
-                        >
-                            🏠 返回大廳
                         </button>
                     </div>
                 </div>
