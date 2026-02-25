@@ -95,10 +95,15 @@
 
 /* iOS 直橫都穩：避免 100vw/100vh 問題 */
 html,
-body {
+body,
+#root {
   width: 100%;
-  height: 100%;
-  overflow-x: hidden;
+  height: 100vh;
+  height: 100dvh;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  position: fixed;
 }
 
 body {
@@ -111,8 +116,11 @@ body {
 }
 
 .game-container {
+  position: fixed;
+  inset: 0;
   width: 100vw;
   height: 100vh;
+  height: 100dvh;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -123,19 +131,15 @@ body {
 
 /* Mahjong Table Layout */
 .mahjong-table {
+  position: absolute;
+  inset: 0;
   width: 100%;
-  max-width: 100%;
-  margin: 0;
-  left: 0;
-  top: 0;
+  height: 100%;
   border-radius: 0;
-  height: 100svh;
   padding: 0;
   background: radial-gradient(circle at center, #2e7d32, #1b5e20);
   box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.5), 0 20px 50px rgba(0, 0, 0, 0.8);
-  position: relative;
   border: 15px solid #4e342e;
-  /* Removed rotateX to ensure mouse event mapping is 100% accurate */
   transform: none;
   transform-style: preserve-3d;
 }
