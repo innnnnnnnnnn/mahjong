@@ -2153,9 +2153,9 @@ input:checked+.slider:before {
   /* PORTRAIT SPECIFIC: 保留其餘 UI 調整 */
   @media (orientation: portrait) {
 
-    /* 手牌區位置：我和對家桌邊+35px，左右家桌邊+25px */
+    /* 手牌區位置：我桌邊+40px，對家+35px，左右家桌邊+0px */
     .player-bottom {
-      bottom: 35px !important;
+      bottom: 40px !important;
     }
 
     .player-top {
@@ -2163,23 +2163,44 @@ input:checked+.slider:before {
     }
 
     .player-left {
-      left: 25px !important;
+      left: 0px !important;
     }
 
     .player-right {
-      right: 25px !important;
+      right: 0px !important;
     }
 
-    /* 手牌區改回 1列 (flex-row) */
+    /* 我方手牌區改為可左右滑動 */
     .player-bottom .hand {
       display: flex !important;
       flex-direction: row !important;
       flex-wrap: nowrap !important;
-      width: auto !important;
+      width: 100vw !important;
       max-width: 100vw !important;
-      justify-content: center !important;
-      align-items: flex-end !important;
-      padding: 5px !important;
+      overflow-x: auto !important;
+      overflow-y: hidden !important;
+      justify-content: flex-start !important;
+      padding: 5px 20px !important;
+      pointer-events: auto !important;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    /* 隱藏捲軸但保留功能 */
+    .player-bottom .hand::-webkit-scrollbar {
+      display: none;
+    }
+
+    /* 動作按鈕在吃碰槓區上方 20px (約距離底部 180px-220px) */
+    .main-controls,
+    .reaction-menu,
+    .chow-picker-menu {
+      bottom: 180px !important;
+      left: 50% !important;
+      transform: translateX(-50%) !important;
+    }
+
+    .chow-picker-menu {
+      bottom: 220px !important;
     }
 
     /* 摸牌區恢復預設間距 */
