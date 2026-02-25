@@ -43,10 +43,10 @@
     --gap: clamp(1.2px, 0.5 * var(--u), 5px);
 
     --edge: clamp(8px, 2.0 * var(--u), 18px);
-    --pi-left-x: calc(0px + var(--edge) + 10px);
-    --pi-right-x: calc(0px + var(--edge) + 10px);
-    --pi-top-y: calc(0px + var(--edge) + 10px);
-    --pi-bot-y: calc(0px + var(--edge) + 10px);
+    --pi-left-x: calc(0px + var(--edge) + 15px);
+    --pi-right-x: calc(0px + var(--edge) + 15px);
+    --pi-top-y: calc(0px + var(--edge) + 60px);
+    --pi-bot-y: calc(0px + var(--edge) + 60px);
     --river-y: calc(var(--pi-top-y) + 45px);
 
     --v-tile-w: var(--tile-w);
@@ -76,10 +76,10 @@
     --gap: clamp(2px, 0.7 * var(--u), 8px);
 
     --edge: clamp(6px, 1.6 * var(--u), 14px);
-    --pi-left-x: calc(0px + var(--edge) + 10px);
-    --pi-right-x: calc(0px + var(--edge) + 10px);
-    --pi-top-y: calc(0px + var(--edge) + 10px);
-    --pi-bot-y: calc(0px + var(--edge) + 10px);
+    --pi-left-x: calc(0px + var(--edge) + 15px);
+    --pi-right-x: calc(0px + var(--edge) + 15px);
+    --pi-top-y: calc(0px + var(--edge) + 0px);
+    --pi-bot-y: calc(0px + var(--edge) + 0px);
     --river-y: calc(var(--pi-top-y) + 40px);
 
     --v-tile-w: var(--tile-w);
@@ -90,6 +90,35 @@
 
     --river-tile-w: var(--tile-w);
     --river-tile-h: var(--tile-h);
+  }
+
+  /* 橫向海底：10列1行 左右滑動 */
+  .river-area {
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, calc(-50% - 60px)) !important;
+    /* Positioned slightly above/around center */
+    width: calc(var(--tile-w) * 10 + 30px) !important;
+    height: calc(var(--tile-h) + 15px) !important;
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    gap: 2px !important;
+    padding: 5px !important;
+    background: rgba(0, 0, 0, 0.2) !important;
+    border-radius: 8px !important;
+    pointer-events: auto !important;
+    justify-content: flex-start !important;
+    scrollbar-width: thin;
+  }
+
+  .river-area .river-tile {
+    flex-shrink: 0 !important;
+  }
+
+  .river-area .river-center-blocker {
+    display: none !important;
   }
 }
 
@@ -210,6 +239,12 @@ body {
   gap: 2px;
   padding: 10px;
   align-items: flex-end;
+  flex-wrap: nowrap;
+  /* Default */
+}
+
+.player-bottom .hand {
+  justify-content: center;
 }
 
 .tile-gap {
@@ -2097,18 +2132,43 @@ input:checked+.slider:before {
   /* PORTRAIT SPECIFIC: 保留其餘 UI 調整 */
   @media (orientation: portrait) {
 
-    /* 重新啟用阻擋塊來製造第 6/7 行的空行效果 */
+    /* 手牌改為兩行 */
+    .player-bottom .hand {
+      flex-wrap: wrap;
+      max-width: calc(var(--tile-w) * 9 + 4px);
+      justify-content: center;
+    }
+
+    /* 海底區域：資訊欄上方 5x5 捲動 */
+    .river-area {
+      top: calc(50% - 200px) !important;
+      left: 50% !important;
+      transform: translateX(-50%) !important;
+      width: calc(var(--tile-w) * 5 + 20px) !important;
+      height: calc(var(--tile-h) * 5 + 20px) !important;
+      max-height: 40vh !important;
+      display: grid !important;
+      grid-template-columns: repeat(5, var(--tile-w)) !important;
+      grid-auto-rows: var(--tile-h) !important;
+      overflow-y: auto !important;
+      overflow-x: hidden !important;
+      padding: 5px !important;
+      background: rgba(0, 0, 0, 0.2) !important;
+      border-radius: 8px !important;
+      border: 1px solid rgba(255, 255, 255, 0.1) !important;
+      pointer-events: auto !important;
+      /* Enable scrolling */
+      align-content: start !important;
+    }
+
     .river-center-blocker {
-      display: block;
-      grid-column: 1 / -1;
-      grid-row: 6 / span 1;
-      height: calc(var(--river-tile-h) * 1.5);
-      visibility: hidden;
+      display: none !important;
     }
 
     .river-tile {
-      transform: none;
-      box-shadow: none;
+      width: var(--tile-w) !important;
+      height: var(--tile-h) !important;
+      transform: none !important;
     }
 
     /* 第七步：結算畫面等比例縮小 (維持寬版佈局) */
