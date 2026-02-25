@@ -2413,15 +2413,15 @@ input:checked+.slider:before {
       gap: 15px !important;
       display: flex !important;
       flex-direction: column !important;
-      width: 100% !important;
-      max-width: 320px !important;
+      width: min(95vw, 500px) !important;
       /* 限制寬度使其在直向更美觀 */
     }
 
     .lobby-card {
-      padding: 20px !important;
+      padding: clamp(15px, 4vh, 25px) !important;
       gap: 12px !important;
       width: 100% !important;
+      box-sizing: border-box !important;
     }
 
     .lobby-card .card-icon {
@@ -2451,9 +2451,14 @@ input:checked+.slider:before {
     }
 
     .room-panel {
-      padding: 15px !important;
-      max-height: none !important;
+      padding: clamp(15px, 3vh, 30px) !important;
+      max-height: 95vh !important;
+      width: 95% !important;
+      max-width: 500px !important;
+      /* 平板寬度上限 */
       border-radius: 15px !important;
+      display: flex !important;
+      flex-direction: column !important;
     }
 
     .room-header {
