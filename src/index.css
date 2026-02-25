@@ -2111,16 +2111,28 @@ input:checked+.slider:before {
 
 .ai-suggest-arrow {
   position: absolute;
-  top: -25px;
+  top: -35px;
+  /* 足夠高，不遮擋手牌 */
   left: 50%;
   transform: translateX(-50%);
-  color: var(--accent-gold);
-  font-size: 1.5rem;
+  color: #ffeb3b;
+  /* 亮黃色 */
+  font-size: 1.8rem;
   font-weight: bold;
   pointer-events: none;
   z-index: 100;
-  text-shadow: 0 2px 5px rgba(0, 0, 0, 0.8);
-  animation: bounceY 0.8s infinite alternate;
+  text-shadow: 0 0 8px rgba(0, 0, 0, 0.9);
+  animation: bounceArrow 0.6s infinite alternate;
+}
+
+@keyframes bounceArrow {
+  from {
+    transform: translateX(-50%) translateY(0);
+  }
+
+  to {
+    transform: translateX(-50%) translateY(-10px);
+  }
 }
 
 @keyframes bounceY {
@@ -2190,17 +2202,20 @@ input:checked+.slider:before {
       display: none;
     }
 
-    /* 動作按鈕在吃碰槓區上方 20px (約距離底部 180px-220px) */
+    /* 動作按鈕在吃碰槓區上方 20px (約距離底部 180px) */
     .main-controls,
-    .reaction-menu,
-    .chow-picker-menu {
+    .reaction-menu {
       bottom: 180px !important;
       left: 50% !important;
       transform: translateX(-50%) !important;
     }
 
+    /* 吃牌選擇器：等比例縮小 移到正中間下方 100px */
     .chow-picker-menu {
-      bottom: 220px !important;
+      bottom: 100px !important;
+      left: 50% !important;
+      transform: translateX(-50%) scale(0.75) !important;
+      transform-origin: center bottom !important;
     }
 
     /* 摸牌區恢復預設間距 */
