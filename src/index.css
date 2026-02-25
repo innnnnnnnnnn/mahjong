@@ -2111,8 +2111,8 @@ input:checked+.slider:before {
 
 .ai-suggest-arrow {
   position: absolute;
-  top: 0px;
-  /* 貼齊牌面頂部 */
+  top: -18px;
+  /* 調整至牌的上緣 (原本 0px 會遮擋牌面) */
   left: 50%;
   transform: translateX(-50%);
   color: #ffeb3b;
