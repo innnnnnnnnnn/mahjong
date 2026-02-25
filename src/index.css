@@ -2266,11 +2266,11 @@ input:checked+.slider:before {
       display: block !important;
     }
 
-    /* 海底區域：資訊欄上方 5列4行 捲動，再往上移 20px */
+    /* 海底區域：資訊欄上方 5列4行 捲動，再往上移 30px */
     .river-area {
       top: 50% !important;
       left: 50% !important;
-      transform: translate(-50%, -100%) translateY(-20px) !important;
+      transform: translate(-50%, -100%) translateY(-30px) !important;
       width: calc(var(--tile-w) * 5 + 20px) !important;
       height: calc(var(--tile-h) * 4 + 20px) !important;
       max-height: 35vh !important;
