@@ -180,22 +180,16 @@ const GameBoard: React.FC<GameBoardProps> = ({ mode, roomId, username, onBack })
                 <button
                     className="btn-leave-room"
                     onClick={onBack}
-                    style={{ position: 'absolute', top: '1%', left: '15px', zIndex: 1000, padding: '6px 15px', borderRadius: '12px', fontSize: '0.8rem', backgroundColor: 'rgba(0,0,0,0.3)' }}
                 >
                     🏠 返回大廳
                 </button>
 
                 <button
+                    className="btn-mute"
                     onClick={() => {
                         const newMuted = !audioService.isMuted();
                         audioService.setMuted(newMuted);
                         setIsMuted(newMuted);
-                    }}
-                    style={{
-                        position: 'absolute', top: '1%', right: '15px', zIndex: 1000,
-                        background: 'rgba(0,0,0,0.5)', border: '1px solid rgba(255,255,255,0.2)',
-                        borderRadius: '12px', padding: '6px 12px', cursor: 'pointer', fontSize: '1.2rem',
-                        transition: 'all 0.2s'
                     }}
                 >
                     {isMuted ? '🔇' : '🔊'}
