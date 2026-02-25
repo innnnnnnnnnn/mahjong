@@ -2483,13 +2483,13 @@ input:checked+.slider:before {
 
     .btn-leave-room-room {
       position: absolute !important;
-      top: 0 !important;
-      left: 50% !important;
-      transform: translate(-50%, -50%) !important;
+      top: 15px !important;
+      right: 15px !important;
       z-index: 100 !important;
-      padding: 8px 20px !important;
-      font-size: 0.95rem !important;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+      padding: 8px 15px !important;
+      font-size: 0.9rem !important;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
+      border-radius: 10px !important;
     }
 
     .room-header {
