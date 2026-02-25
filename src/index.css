@@ -45,8 +45,8 @@
     --edge: clamp(8px, 2.0 * var(--u), 18px);
     --pi-left-x: calc(0px + var(--edge) + 20px);
     --pi-right-x: calc(0px + var(--edge) + 20px);
-    --pi-top-y: calc(0px + var(--edge) + 80px);
-    --pi-bot-y: calc(0px + var(--edge) + 120px);
+    --pi-top-y: calc(0px + var(--edge) + 100px);
+    --pi-bot-y: calc(0px + var(--edge) + 150px);
     --river-y: calc(var(--pi-top-y) + 45px);
 
     --v-tile-w: var(--tile-w);
@@ -78,8 +78,8 @@
     --edge: clamp(6px, 1.6 * var(--u), 14px);
     --pi-left-x: calc(0px + var(--edge) + 20px);
     --pi-right-x: calc(0px + var(--edge) + 20px);
-    --pi-top-y: calc(0px + var(--edge) - 15px);
-    --pi-bot-y: calc(0px + var(--edge) - 15px);
+    --pi-top-y: calc(0px + var(--edge) - 20px);
+    --pi-bot-y: calc(0px + var(--edge) - 20px);
     --river-y: calc(var(--pi-top-y) + 40px);
 
     --v-tile-w: var(--tile-w);
@@ -92,34 +92,32 @@
     --river-tile-h: var(--tile-h);
   }
 
-  /* 橫向海底：中央左右各6列 (12列1行)，避開中央資訊欄 */
+  /* 橫向海底：10列2行，中央上方+10px，左右滑動 */
   .river-area {
     position: absolute;
     top: 50% !important;
-    left: 10px !important;
-    right: 10px !important;
-    transform: translateY(-50%) !important;
-    display: flex !important;
-    flex-direction: row !important;
-    flex-wrap: nowrap !important;
-    justify-content: center !important;
-    align-items: center !important;
+    left: 50% !important;
+    transform: translate(-50%, -100%) translateY(-10px) !important;
+    width: calc(var(--tile-w) * 10 + 30px) !important;
+    height: calc(var(--tile-h) * 2 + 15px) !important;
+    display: grid !important;
+    grid-template-columns: repeat(10, var(--tile-w)) !important;
+    grid-auto-rows: var(--tile-h) !important;
+    grid-auto-flow: row !important;
     overflow-x: auto !important;
     overflow-y: hidden !important;
-    pointer-events: auto !important;
-    z-index: 40;
-    padding: 0 40px !important;
     gap: 2px !important;
-  }
-
-  .river-spacer {
-    flex-shrink: 0 !important;
-    width: 200px !important;
-    /* 這個空間避開了中央資訊欄 */
-    height: 10px;
+    padding: 5px !important;
+    background: rgba(0, 0, 0, 0.2) !important;
+    border-radius: 8px !important;
+    pointer-events: auto !important;
+    justify-content: start !important;
+    align-content: start !important;
   }
 
   .river-area .river-tile {
+    width: var(--tile-w) !important;
+    height: var(--tile-h) !important;
     flex-shrink: 0 !important;
   }
 
@@ -2138,22 +2136,42 @@ input:checked+.slider:before {
   /* PORTRAIT SPECIFIC: 保留其餘 UI 調整 */
   @media (orientation: portrait) {
 
-    /* 手牌改為 8列2行 */
+    /* 手牌：固定 8列2行，右方摸牌區 */
     .player-bottom .hand {
-      flex-wrap: wrap;
-      width: calc(var(--tile-w) * 8 + 30px) !important;
+      display: grid !important;
+      grid-template-columns: repeat(8, var(--tile-w)) auto !important;
+      grid-template-rows: repeat(2, var(--tile-h)) !important;
+      gap: 2px !important;
+      width: auto !important;
       max-width: none !important;
-      justify-content: center;
+      justify-content: center !important;
+      align-items: end !important;
+      padding: 10px !important;
     }
 
-    /* 海底區域：資訊欄上方 5x5 捲動 */
+    /* 使所有非摸到的牌自動填入 8x2 網格 */
+    .player-bottom .hand>div:not(.tile-gap) {
+      grid-column: auto;
+      grid-row: auto;
+    }
+
+    /* 摸牌區：固定在右側，跨兩行居中或靠下 */
+    .player-bottom .hand .tile-gap {
+      margin-left: 15px !important;
+      grid-column: 9 !important;
+      grid-row: 1 / span 2 !important;
+      display: flex !important;
+      align-items: flex-end !important;
+    }
+
+    /* 海底區域：資訊欄上方 5列4行 捲動，距離+10px */
     .river-area {
-      top: calc(50% - 200px) !important;
+      top: 50% !important;
       left: 50% !important;
-      transform: translateX(-50%) !important;
+      transform: translate(-50%, -100%) translateY(-10px) !important;
       width: calc(var(--tile-w) * 5 + 20px) !important;
-      height: calc(var(--tile-h) * 5 + 20px) !important;
-      max-height: 40vh !important;
+      height: calc(var(--tile-h) * 4 + 20px) !important;
+      max-height: 35vh !important;
       display: grid !important;
       grid-template-columns: repeat(5, var(--tile-w)) !important;
       grid-auto-rows: var(--tile-h) !important;
@@ -2164,7 +2182,6 @@ input:checked+.slider:before {
       border-radius: 8px !important;
       border: 1px solid rgba(255, 255, 255, 0.1) !important;
       pointer-events: auto !important;
-      /* Enable scrolling */
       align-content: start !important;
     }
 
