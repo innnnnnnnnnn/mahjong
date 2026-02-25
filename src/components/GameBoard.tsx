@@ -453,11 +453,11 @@ const GameBoard: React.FC<GameBoardProps> = ({ mode, roomId, username, onBack })
                 </AnimatePresence>
 
                 {gameState.status === 'PLAYING' && isMyTurn && player.hand.length % 3 === 2 && (canUserPlayHu || canUserAnKong || canUserJiaKong || canUserTing) && (
-                    <div className="reaction-menu" style={{ transform: 'translate(-50%, -150%)' }}>
+                    <div className="reaction-menu">
                         {canUserPlayHu && <button className="btn btn-hu btn-juice" onClick={() => processAction(myPlayerIndex, 'HU')}>自摸</button>}
                         {canUserAnKong && <button className="btn btn-action btn-juice" onClick={() => processAction(myPlayerIndex, 'ANKONG', { combo: anKongCombos[0] })}>暗槓</button>}
                         {canUserJiaKong && <button className="btn btn-action btn-juice" onClick={() => processAction(myPlayerIndex, 'JIAKONG', { tile: jiaKongCombos[0].tile })}>加槓</button>}
-                        {canUserTing && <button className="btn btn-primary btn-juice" onClick={() => processAction(myPlayerIndex, 'TING')}>宣告聽牌 (自動代打)</button>}
+                        {canUserTing && <button className="btn btn-primary btn-juice" style={{ whiteSpace: 'pre-line' }} onClick={() => processAction(myPlayerIndex, 'TING')}>宣告聽牌<br />(自動代打)</button>}
                     </div>
                 )}
 
@@ -500,8 +500,10 @@ const GameBoard: React.FC<GameBoardProps> = ({ mode, roomId, username, onBack })
                                         borderTop: '1px solid rgba(255,255,255,0.05)',
                                         paddingTop: '10px'
                                     }}>
-                                        <div style={{ textAlign: 'left' }}>
-                                            {getWindName(gameState.windOfTheRound)}風{getWindName(gameState.windOfTheHand)}局 | 剩餘牌數: {gameState.deck.length} 張
+                                        <div className="settlement-status-text">
+                                            <span>{getWindName(gameState.windOfTheRound)}風{getWindName(gameState.windOfTheHand)}局</span>
+                                            <span className="info-sep"> | </span>
+                                            <span>剩餘牌數: {gameState.deck.length} 張</span>
                                         </div>
 
                                         <div style={{ fontSize: '1.1rem', fontWeight: 'bold', color: 'var(--accent-gold)', display: 'flex', alignItems: 'center' }}>

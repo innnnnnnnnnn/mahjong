@@ -132,8 +132,8 @@ const renderTiao = (value: number) => {
 const renderWan = (display: string) => {
     return (
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', width: '100%', fontWeight: 'bold' }}>
-            <span style={{ fontSize: 'calc(var(--tile-fs) * 0.7)', color: '#1976d2', marginBottom: '0px' }}>{display[0]}</span>
-            <span style={{ fontSize: 'var(--tile-fs)', color: '#d32f2f', marginTop: '-4px' }}>{display[1]}</span>
+            <span style={{ fontSize: 'var(--tile-fs)', color: '#1976d2', marginBottom: '-4px' }}>{display[0]}</span>
+            <span style={{ fontSize: 'var(--tile-fs)', color: '#d32f2f', marginTop: '0px' }}>{display[1]}</span>
         </div>
     );
 }
