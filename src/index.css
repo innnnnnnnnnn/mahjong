@@ -2382,5 +2382,113 @@ input:checked+.slider:before {
       font-size: var(--tile-fs) !important;
       flex-shrink: 0 !important;
     }
+
+    /* === 大廳與房間直向優化 (無滑動、重新設計) === */
+
+    /* 大廳 Lobby */
+    .lobby-screen-container {
+      padding: 10px !important;
+      justify-content: flex-start !important;
+      overflow: hidden !important;
+    }
+
+    .lobby-header {
+      margin-bottom: 10px !important;
+    }
+
+    .lobby-title {
+      font-size: 1.5rem !important;
+    }
+
+    .lobby-cards-container {
+      max-height: none !important;
+      overflow: visible !important;
+      gap: 10px !important;
+      display: flex !important;
+      flex-direction: column !important;
+    }
+
+    .lobby-card {
+      padding: 15px !important;
+      gap: 10px !important;
+    }
+
+    .lobby-card .card-icon {
+      font-size: 2rem !important;
+    }
+
+    .lobby-card .card-title {
+      font-size: 1.1rem !important;
+    }
+
+    .lobby-card .card-desc {
+      display: none !important;
+      /* 直向隱藏描述以節省空間 */
+    }
+
+    .btn-start,
+    .btn-join {
+      padding: 12px !important;
+      font-size: 1rem !important;
+    }
+
+    /* 房間 Room */
+    .room-screen-container {
+      padding: 10px !important;
+      justify-content: flex-start !important;
+    }
+
+    .room-panel {
+      padding: 15px !important;
+      max-height: none !important;
+      border-radius: 15px !important;
+    }
+
+    .room-header {
+      margin-bottom: 10px !important;
+      gap: 5px !important;
+    }
+
+    .room-title {
+      font-size: 1.3rem !important;
+    }
+
+    .player-slots-container {
+      max-height: none !important;
+      overflow: visible !important;
+      gap: 8px !important;
+      margin-bottom: 15px !important;
+    }
+
+    .player-slot {
+      padding: 8px 12px !important;
+    }
+
+    .slot-avatar {
+      width: 2.2rem !important;
+      height: 2.2rem !important;
+      font-size: 1rem !important;
+    }
+
+    .slot-name {
+      font-size: 0.9rem !important;
+    }
+
+    .room-actions-footer {
+      gap: 10px !important;
+    }
+
+    .btn-ready,
+    .btn-start-game,
+    .btn-cancel-ready {
+      padding: 12px !important;
+      font-size: 1.1rem !important;
+    }
+
+    .btn-leave-room,
+    .btn-copy-link {
+      padding: 10px 15px !important;
+      font-size: 0.9rem !important;
+    }
   }
 }
