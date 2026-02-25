@@ -2287,18 +2287,24 @@ input:checked+.slider:before {
       align-content: start !important;
     }
 
-    /* HUD 按鈕直向位置優化 (大小統一) */
+    /* HUD 按鈕直向位置優化 (形式大小完全統一) */
+    .btn-leave-room,
+    .btn-mute {
+      height: 36px !important;
+      width: 44px !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      font-size: 1.1rem !important;
+      /* 圖示大小統一 */
+    }
+
     .btn-leave-room {
       left: 5px !important;
-      height: 36px !important;
-      font-size: 0.75rem !important;
     }
 
     .btn-mute {
       right: 5px !important;
-      height: 36px !important;
-      width: 44px !important;
-      font-size: 1.0rem !important;
     }
 
     .river-center-blocker {
@@ -2388,37 +2394,42 @@ input:checked+.slider:before {
     /* 大廳 Lobby */
     .lobby-screen-container {
       padding: 10px !important;
-      justify-content: flex-start !important;
+      justify-content: center !important;
+      /* 上下置中 */
       overflow: hidden !important;
     }
 
     .lobby-header {
-      margin-bottom: 10px !important;
+      margin-bottom: 20px !important;
     }
 
     .lobby-title {
-      font-size: 1.5rem !important;
+      font-size: 1.6rem !important;
     }
 
     .lobby-cards-container {
       max-height: none !important;
       overflow: visible !important;
-      gap: 10px !important;
+      gap: 15px !important;
       display: flex !important;
       flex-direction: column !important;
+      width: 100% !important;
+      max-width: 320px !important;
+      /* 限制寬度使其在直向更美觀 */
     }
 
     .lobby-card {
-      padding: 15px !important;
-      gap: 10px !important;
+      padding: 20px !important;
+      gap: 12px !important;
+      width: 100% !important;
     }
 
     .lobby-card .card-icon {
-      font-size: 2rem !important;
+      font-size: 2.5rem !important;
     }
 
     .lobby-card .card-title {
-      font-size: 1.1rem !important;
+      font-size: 1.2rem !important;
     }
 
     .lobby-card .card-desc {
@@ -2428,14 +2439,15 @@ input:checked+.slider:before {
 
     .btn-start,
     .btn-join {
-      padding: 12px !important;
-      font-size: 1rem !important;
+      padding: 14px !important;
+      font-size: 1.1rem !important;
     }
 
     /* 房間 Room */
     .room-screen-container {
       padding: 10px !important;
-      justify-content: flex-start !important;
+      justify-content: center !important;
+      /* 上下置中 */
     }
 
     .room-panel {

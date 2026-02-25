@@ -66,7 +66,7 @@ const SettingsModal: React.FC<{ username: string, onClose: () => void }> = ({ us
                 }}
             >
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px' }}>
-                    <h2 style={{ color: 'var(--accent-gold)', margin: 0, fontSize: '1.8rem' }}>遊戲音效設定</h2>
+                    <h2 style={{ color: 'var(--accent-gold)', margin: 0, fontSize: '1.8rem' }}>遊戲設定</h2>
                     <button
                         onClick={onClose}
                         style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.5)', fontSize: '1.5rem', cursor: 'pointer' }}

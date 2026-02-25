@@ -181,7 +181,7 @@ const GameBoard: React.FC<GameBoardProps> = ({ mode, roomId, username, onBack })
                     className="btn-leave-room"
                     onClick={onBack}
                 >
-                    🏠 返回大廳
+                    🏠
                 </button>
 
                 <button

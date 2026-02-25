@@ -27,7 +27,7 @@ const LobbyScreen: React.FC<LobbyScreenProps> = ({ username, onLogout, onCreateR
                         <div className="user-name">{username}</div>
                         <div className="user-coins">💰 1,000</div>
                     </div>
-                    <button onClick={onOpenSettings} className="btn-logout" style={{ marginRight: '10px', backgroundColor: '#555' }}>⚙️ 音效設定</button>
+                    <button onClick={onOpenSettings} className="btn-logout" style={{ marginRight: '10px', backgroundColor: '#555' }}>⚙️ 設定</button>
                     <button onClick={onLogout} className="btn-logout">登出 (Sign Out)</button>
                 </div>
             </div>

@@ -50,7 +50,7 @@ const RoomScreen: React.FC<RoomScreenProps> = ({
                             onClick={onLeaveRoom}
                             className="btn-leave-room"
                         >
-                            🚪 離開
+                            🏠 返回大廳
                         </button>
                     </div>
                 </div>
