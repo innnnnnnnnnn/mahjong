@@ -2183,7 +2183,7 @@ input:checked+.slider:before {
       right: 0px !important;
     }
 
-    /* 我方手牌區改為可左右滑動 */
+    /* 我方手牌區改為可左右滑動且保持置中 */
     .player-bottom .hand {
       display: flex !important;
       flex-direction: row !important;
@@ -2193,7 +2193,7 @@ input:checked+.slider:before {
       overflow-x: auto !important;
       overflow-y: visible !important;
       /* 想要看到箭頭，但 overflow-x 為 auto 時這行通常無效 */
-      justify-content: flex-start !important;
+      justify-content: center !important;
       padding: 25px 20px 5px 20px !important;
       /* 縮小上方留白至 25px */
       pointer-events: auto !important;
