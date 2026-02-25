@@ -1114,34 +1114,43 @@ body {
 
 /* Action HUD (Right-Bottom Optimization) */
 
-/* HUD Buttons (返回大廳 & 靜音) */
-.btn-leave-room {
-  position: absolute;
-  top: 1%;
-  left: 15px;
-  z-index: 1000;
-  padding: 6px 15px;
-  border-radius: 12px;
-  font-size: 0.8rem;
-  background-color: rgba(0, 0, 0, 0.3);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: white;
-  cursor: pointer;
-}
-
+/* HUD Buttons (返回大廳 & 靜音) - 統一形式與大小 */
+.btn-leave-room,
 .btn-mute {
   position: absolute;
   top: 1%;
-  right: 15px;
   z-index: 1000;
-  background: rgba(0, 0, 0, 0.5);
+  height: 40px;
+  min-width: 40px;
+  padding: 0 12px;
+  border-radius: 10px;
+  background-color: rgba(0, 0, 0, 0.5);
   border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 12px;
-  padding: 6px 12px;
-  cursor: pointer;
-  font-size: 1.2rem;
-  transition: all 0.2s;
   color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  font-weight: bold;
+  transition: all 0.2s;
+  backdrop-filter: blur(5px);
+}
+
+.btn-leave-room {
+  left: 15px;
+}
+
+.btn-mute {
+  right: 15px;
+  font-size: 1.1rem;
+  /* 圖示稍微大一點 */
+}
+
+.btn-leave-room:hover,
+.btn-mute:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+  transform: translateY(-1px);
 }
 
 .reaction-menu {
@@ -1270,26 +1279,24 @@ body {
   filter: drop-shadow(0 0 30px rgba(255, 215, 0, 0.8));
 }
 
-/* .ting-aura has no relative positioning to avoid layout jumping */
+/*聽牌金色外框：改為框住手牌區 */
+.ting-aura .hand {
+  position: relative !important;
+}
 
-.ting-aura::after {
+.ting-aura .hand::after {
   content: '';
   position: absolute;
-  top: -8px;
-  left: 80px;
-  right: 80px;
-  bottom: -8px;
-  border-radius: 12px;
-  border: 2px solid #fff5ad;
-  /* Brighter gold border */
-  /* Intense layered glow */
+  inset: -6px;
+  border-radius: 8px;
+  border: 3px solid #ffcc00;
   box-shadow:
     0 0 20px #ffcc00,
     0 0 40px rgba(255, 204, 0, 0.6),
     inset 0 0 15px rgba(255, 204, 0, 0.5);
   animation: aura-pulse-v2 1.2s infinite alternate ease-in-out;
   pointer-events: none;
-  z-index: -1;
+  z-index: 10;
 }
 
 @keyframes aura-pulse-v2 {
@@ -2280,14 +2287,18 @@ input:checked+.slider:before {
       align-content: start !important;
     }
 
-    /* HUD 按鈕直向位置優化 */
+    /* HUD 按鈕直向位置優化 (大小統一) */
     .btn-leave-room {
       left: 5px !important;
+      height: 36px !important;
+      font-size: 0.75rem !important;
     }
 
     .btn-mute {
       right: 5px !important;
-      transform: scale(0.8) !important;
+      height: 36px !important;
+      width: 44px !important;
+      font-size: 1.0rem !important;
     }
 
     .river-center-blocker {
