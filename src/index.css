@@ -43,10 +43,10 @@
     --gap: clamp(1.2px, 0.5 * var(--u), 5px);
 
     --edge: clamp(8px, 2.0 * var(--u), 18px);
-    --pi-left-x: calc(0px + var(--edge) + 20px);
-    --pi-right-x: calc(0px + var(--edge) + 20px);
-    --pi-top-y: calc(0px + var(--edge) + 100px);
-    --pi-bot-y: calc(0px + var(--edge) + 150px);
+    --pi-left-x: calc(0px + var(--edge) + 10px);
+    --pi-right-x: calc(0px + var(--edge) + 10px);
+    --pi-top-y: calc(0px + var(--edge) + 10px);
+    --pi-bot-y: calc(0px + var(--edge) + 10px);
     --river-y: calc(var(--pi-top-y) + 45px);
 
     --v-tile-w: var(--tile-w);
@@ -761,6 +761,25 @@ body {
   gap: 20px;
   z-index: 1500;
   pointer-events: auto;
+}
+
+@media (orientation: landscape) {
+
+  .main-controls,
+  .reaction-menu,
+  .chow-picker-menu {
+    left: calc(50% + 160px) !important;
+    bottom: var(--pi-bot-y) !important;
+    transform: none !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 10px !important;
+  }
+
+  .chow-picker-menu {
+    bottom: calc(var(--pi-bot-y) + 80px) !important;
+  }
 }
 
 .overlay-menu,
@@ -2137,32 +2156,43 @@ input:checked+.slider:before {
   /* PORTRAIT SPECIFIC: 保留其餘 UI 調整 */
   @media (orientation: portrait) {
 
-    /* 手牌：固定 8列2行，右方摸牌區 */
-    .player-bottom .hand {
+    /* 手牌：10列2行，右側摸牌區 */
+    .player-bottom {
+      bottom: calc(var(--pi-bot-y) + 45px + 10px) !important;
+    }
+
+    .player-top {
+      top: calc(var(--pi-top-y) + 45px + 10px) !important;
+    }
+
+    .player-left {
+      left: calc(var(--pi-left-x) + 45px + 10px) !important;
+    }
+
+    .player-right {
+      right: calc(var(--pi-right-x) + 45px + 10px) !important;
+    }
+
+    .player-bottom .hand,
+    .player-top .hand {
       display: grid !important;
-      grid-template-columns: repeat(8, var(--tile-w)) auto !important;
+      grid-template-columns: repeat(8, var(--tile-w)) var(--tile-w) var(--tile-w) !important;
       grid-template-rows: repeat(2, var(--tile-h)) !important;
       gap: 2px !important;
       width: auto !important;
-      max-width: none !important;
       justify-content: center !important;
-      align-items: end !important;
+      align-items: center !important;
       padding: 10px !important;
     }
 
-    /* 使所有非摸到的牌自動填入 8x2 網格 */
-    .player-bottom .hand>div:not(.tile-gap) {
-      grid-column: auto;
-      grid-row: auto;
-    }
-
-    /* 摸牌區：固定在右側，跨兩行居中或靠下 */
-    .player-bottom .hand .tile-gap {
-      margin-left: 15px !important;
-      grid-column: 9 !important;
+    .player-bottom .hand .tile-gap,
+    .player-top .hand .tile-gap {
+      margin-left: 0 !important;
+      grid-column: 10 !important;
       grid-row: 1 / span 2 !important;
       display: flex !important;
-      align-items: flex-end !important;
+      align-items: center !important;
+      justify-content: center !important;
     }
 
     /* 海底區域：資訊欄上方 5列4行 捲動，距離+10px */
