@@ -1791,7 +1791,27 @@ body {
   flex-wrap: wrap;
 }
 
-.btn-copy-link,
+.btn-copy-link {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 9999px;
+  padding: 0.4rem 1rem;
+  font-size: 0.85rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  white-space: nowrap;
+}
+
+.btn-copy-link:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-1px);
+}
+
 .btn-leave-room {
   background-color: rgba(255, 255, 255, 0.1);
   color: white;
@@ -1807,15 +1827,6 @@ body {
   white-space: nowrap;
 }
 
-@media (min-width: 768px) {
-
-  .btn-copy-link,
-  .btn-leave-room {
-    flex: none;
-  }
-}
-
-.btn-copy-link:hover,
 .btn-leave-room:hover {
   background-color: rgba(255, 255, 255, 0.2);
 }
@@ -2494,34 +2505,22 @@ input:checked+.slider:before {
 
     .room-header {
       display: flex !important;
-      flex-direction: row !important;
-      /* 橫向排列 */
-      justify-content: space-between !important;
+      flex-direction: column !important;
+      justify-content: flex-start !important;
       align-items: flex-start !important;
       margin-bottom: 20px !important;
-      gap: 15px !important;
+      gap: 10px !important;
     }
 
     .room-title {
-      font-size: clamp(1.4rem, 4vw, 1.8rem) !important;
+      font-size: clamp(1.2rem, 3.5vw, 1.5rem) !important;
+      margin: 0 !important;
     }
 
-    .room-header-actions {
-      display: flex !important;
-      flex-direction: row !important;
-      /* 橫向排列 */
-      flex-wrap: wrap !important;
-      gap: 10px !important;
-      width: auto !important;
-      justify-content: flex-end !important;
-    }
-
-    .btn-leave-room,
     .btn-copy-link {
-      width: auto !important;
-      /* 不再強制滿版 */
-      padding: 10px 20px !important;
-      font-size: 1rem !important;
+      padding: 5px 12px !important;
+      font-size: 0.75rem !important;
+      height: auto !important;
       flex: none !important;
       border-radius: 9999px !important;
     }

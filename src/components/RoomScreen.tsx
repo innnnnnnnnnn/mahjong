@@ -42,16 +42,16 @@ const RoomScreen: React.FC<RoomScreenProps> = ({
                 </button>
                 <div className="room-header">
                     <div>
-                        <h1 className="room-title">房號: {roomId}</h1>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                            <h1 className="room-title">房號: {roomId}</h1>
+                            <button
+                                onClick={onCopyLink}
+                                className="btn-copy-link"
+                            >
+                                📋 複製邀請連結
+                            </button>
+                        </div>
                         <p className="room-subtitle">等待玩家加入中... ({players.length}/4)</p>
-                    </div>
-                    <div className="room-header-actions">
-                        <button
-                            onClick={onCopyLink}
-                            className="btn-copy-link"
-                        >
-                            📋 複製邀請連結
-                        </button>
                     </div>
                 </div>
 
