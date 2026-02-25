@@ -76,10 +76,10 @@
     --gap: clamp(2px, 0.7 * var(--u), 8px);
 
     --edge: clamp(6px, 1.6 * var(--u), 14px);
-    --pi-left-x: calc(0px + var(--edge) + 20px);
-    --pi-right-x: calc(0px + var(--edge) + 20px);
-    --pi-top-y: calc(0px + var(--edge) - 20px);
-    --pi-bot-y: calc(0px + var(--edge) - 20px);
+    --pi-left-x: calc(0px + var(--edge) + 80px);
+    --pi-right-x: calc(0px + var(--edge) + 80px);
+    --pi-top-y: calc(0px + var(--edge) + 80px);
+    --pi-bot-y: calc(0px + var(--edge) + 80px);
     --river-y: calc(var(--pi-top-y) + 40px);
 
     --v-tile-w: var(--tile-w);
