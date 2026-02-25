@@ -2229,14 +2229,14 @@ input:checked+.slider:before {
       display: block !important;
     }
 
-    /* 海底區域：資訊欄上方 5列4行 捲動，距離+10px */
+    /* 海底區域：資訊欄上方 5列5行 捲動，再往上移 30px (共 40px) */
     .river-area {
       top: 50% !important;
       left: 50% !important;
-      transform: translate(-50%, -100%) translateY(-10px) !important;
+      transform: translate(-50%, -100%) translateY(-40px) !important;
       width: calc(var(--tile-w) * 5 + 20px) !important;
-      height: calc(var(--tile-h) * 4 + 20px) !important;
-      max-height: 35vh !important;
+      height: calc(var(--tile-h) * 5 + 20px) !important;
+      max-height: 40vh !important;
       display: grid !important;
       grid-template-columns: repeat(5, var(--tile-w)) !important;
       grid-auto-rows: var(--tile-h) !important;
@@ -2308,12 +2308,28 @@ input:checked+.slider:before {
       font-size: 1.0rem !important;
     }
 
-    /* 結算畫面牌型大小再次縮小 (由 4.2vw 降至 3.6vw) */
+    /* 結算畫面牌型大小與手牌相同，且可左右滑動 */
+    .winning-hand-display {
+      width: 100% !important;
+      overflow-x: auto !important;
+      display: flex !important;
+      flex-direction: row !important;
+      flex-wrap: nowrap !important;
+      padding: 10px 0 !important;
+      justify-content: flex-start !important;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .winning-hand-display::-webkit-scrollbar {
+      height: 4px;
+    }
+
     .small-tile .tile,
     .winning-hand-display .tile {
-      width: 3.6vw !important;
-      height: 5.0vw !important;
-      font-size: 1.8vw !important;
+      width: var(--tile-w) !important;
+      height: var(--tile-h) !important;
+      font-size: var(--tile-fs) !important;
+      flex-shrink: 0 !important;
     }
   }
 }
