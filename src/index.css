@@ -2111,17 +2111,17 @@ input:checked+.slider:before {
 
 .ai-suggest-arrow {
   position: absolute;
-  top: -40px;
-  /* 稍微再拉高一點 */
+  top: 0px;
+  /* 貼齊牌面頂部 */
   left: 50%;
   transform: translateX(-50%);
   color: #ffeb3b;
-  font-size: 1.8rem;
+  font-size: 1.2rem;
+  /* 縮小尺寸 */
   font-weight: bold;
   pointer-events: none;
   z-index: 1001;
-  /* 確保在最上層 */
-  text-shadow: 0 0 10px rgba(0, 0, 0, 1), 0 0 5px rgba(0, 0, 0, 1);
+  text-shadow: 0 0 8px rgba(0, 0, 0, 1);
   animation: bounceArrow 0.6s infinite alternate;
 }
 
@@ -2131,7 +2131,8 @@ input:checked+.slider:before {
   }
 
   to {
-    transform: translateX(-50%) translateY(-10px);
+    transform: translateX(-50%) translateY(-5px);
+    /* Made subtler */
   }
 }
 
@@ -2193,8 +2194,8 @@ input:checked+.slider:before {
       overflow-y: visible !important;
       /* 想要看到箭頭，但 overflow-x 為 auto 時這行通常無效 */
       justify-content: flex-start !important;
-      padding: 45px 20px 5px 20px !important;
-      /* 上方留 45px 給提示箭頭 */
+      padding: 25px 20px 5px 20px !important;
+      /* 縮小上方留白至 25px */
       pointer-events: auto !important;
       -webkit-overflow-scrolling: touch;
     }
