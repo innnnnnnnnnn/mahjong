@@ -1,4 +1,4 @@
-name: Create GitHub Release
+name: "Mahjong: Create GitHub Release"
 
 on:
   push:
